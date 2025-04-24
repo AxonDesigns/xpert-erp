@@ -1,0 +1,47 @@
+---
+import RootLayout from "@docs/layouts/RootLayout.astro";
+import api from "@docs/lib/api";
+import { ChevronDown } from "lucide-astro";
+
+const response = await api.get("/doc");
+const docSchema = response.data;
+const paths = Object.entries(docSchema.paths).map(([key, value]) => key);
+console.dir(paths);
+---
+
+<RootLayout title="Documentation" class="flex">
+	<aside class="bg-surface-1 text-white w-72">
+		<div class="inline-flex items-center gap-1 m-4">
+			<span class="text-xs">Xpert ERP /</span>
+			<h1 class="font-semibold">Documentation</h1>
+		</div>
+		<div class="mt-4 mx-2 flex flex-col items-stretch">
+			<button
+				type="button"
+				class="btn btn-primary h-8 px-2 justify-start"
+			>
+				<ChevronDown class="w-4 h-4" />
+				HOLA
+			</button>
+			<div class="flex gap-2 items-center ml-4">
+				<div class="w-px h-10 bg-foreground/25"></div>
+				<button
+					type="button"
+					class="flex-1 btn btn-ghost h-8 justify-start"
+				>
+					Option 1
+				</button>
+			</div>
+			<div class="flex gap-2 items-center ml-4">
+				<div class="w-px h-10 bg-foreground/25"></div>
+				<button
+					type="button"
+					class="flex-1 btn btn-ghost h-8 justify-start"
+				>
+					Option 1
+				</button>
+			</div>
+		</div>
+	</aside>
+	<main></main>
+</RootLayout>

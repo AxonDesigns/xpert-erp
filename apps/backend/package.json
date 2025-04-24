@@ -3,7 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "db:push": "bun run drizzle-kit push",
+    "db:pull": "bun run drizzle-kit pull",
+    "db:migrate": "bun run drizzle-kit migrate",
+    "db:reset": "bun run drizzle-kit reset",
+    "start": "bun run src/index.ts",
+    "test": "bun run test"
   },
   "exports": {
     "./types/*": "./src/db/types/*.ts",

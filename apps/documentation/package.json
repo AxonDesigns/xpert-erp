@@ -1,0 +1,21 @@
+{
+  "name": "@repo/documentation",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.2.1",
+    "@biomejs/biome": "^1.9.4",
+    "@tailwindcss/vite": "^4.1.4",
+    "astro": "^5.7.5",
+    "axios": "^1.8.4",
+    "hono-astro-adapter": "^1.0.18",
+    "lucide-astro": "^0.503.0",
+    "tailwindcss": "^4.1.4"
+  }
+}
