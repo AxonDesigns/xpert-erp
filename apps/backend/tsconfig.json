@@ -1,0 +1,22 @@
+{
+  "extends": "@repo/typescript/base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@backend/*": [
+        "./src/*"
+      ],
+      "@env/*": [
+        "../../packages/env/src/*"
+      ]
+    }
+  },
+  "include": [
+    "."
+  ]
+}

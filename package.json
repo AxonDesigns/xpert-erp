@@ -1,0 +1,28 @@
+{
+  "name": "xpert-erp",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A monorepo for the xpert-erp project",
+  "type": "module",
+  "author": "AxonStudios",
+  "license": "ISC",
+  "packageManager": "bun@1.2.5",
+  "scripts": {
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev": "turbo dev"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "turbo": "^2.5.0"
+  }
+}
