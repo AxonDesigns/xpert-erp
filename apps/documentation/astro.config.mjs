@@ -8,7 +8,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   adapter: honoAstro(),
   output: "server",
-  outDir: "../backend/public/docs",
+  outDir: "../backend/static/docs",
   base: "/docs",
   vite: {
     plugins: [tailwindcss()],
