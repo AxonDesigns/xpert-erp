@@ -1,0 +1,40 @@
+---
+import { ChevronDown } from "lucide-astro";
+interface Props {
+    name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<button
+    type="button"
+    class="group-button btn btn-primary h-8 px-2 justify-start"
+>
+    <ChevronDown class="w-4 h-4" />
+    {name}
+</button>
+<div class="group-list flex gap-2 ml-4 items-stretch">
+    <div class="w-px bg-foreground/25"></div>
+    <div class="flex-1 flex flex-col gap-1 items-stretch">
+        <button type="button" class="btn btn-ghost h-8 justify-start">
+            Option 1
+        </button>
+        <button type="button" class="btn btn-ghost h-8 justify-start">
+            Option 2
+        </button>
+        <button type="button" class="btn btn-ghost h-8 justify-start">
+            Option 3
+        </button>
+    </div>
+</div>
+
+<script>
+    const button = document.querySelector(".group-button");
+    const list = document.querySelector(".group-list");
+    if (button && list) {
+        button.addEventListener("click", () => {
+            list.classList.toggle("hidden");
+        });
+    }
+</script>

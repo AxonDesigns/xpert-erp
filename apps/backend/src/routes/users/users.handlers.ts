@@ -1,23 +1,32 @@
 import db from "@backend/db";
 import users from "@backend/db/schema/users";
+import { userPublicColumns } from "@backend/db/validators/users";
 import type { AppRouteHandler } from "@backend/lib/types";
-import type { CreateRoute, DeleteOneRoute, GetOneRoute, ListRoute, UpdateOneRoute } from "@backend/routes/users/users.routes";
-import { eq, getTableColumns, sql } from "drizzle-orm";
+import type {
+  CreateRoute,
+  DeleteOneRoute,
+  GetOneRoute,
+  ListRoute,
+  UpdateOneRoute,
+} from "@backend/routes/users/users.routes";
+import { eq } from "drizzle-orm";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 
-const publicColumns = () => {
-  const { otpSecret, password, ...columns } = getTableColumns(users);
-  return columns;
-}
-
 export const list: AppRouteHandler<ListRoute> = async (c) => {
-  const userList = await db.select(publicColumns()).from(users).limit(10).offset(0);
+  const userList = await db
+    .select(userPublicColumns())
+    .from(users)
+    .limit(10)
+    .offset(0);
   return c.json(userList, HttpStatusCodes.OK);
 };
 
 export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
-  const [user] = await db.select(publicColumns()).from(users).where(eq(users.id, id));
+  const [user] = await db
+    .select(userPublicColumns())
+    .from(users)
+    .where(eq(users.id, id));
   if (!user) {
     return c.json(
       {
@@ -31,24 +40,33 @@ export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
 
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const { email, password, username, roleId } = c.req.valid("json");
-  const [user] = await db.insert(users).values({
-    email,
-    password,
-    username,
-    roleId
-  }).returning(publicColumns());
+
+  const hashedPassword = await Bun.password.hash(password, "bcrypt");
+
+  const [user] = await db
+    .insert(users)
+    .values({
+      email,
+      password: hashedPassword,
+      username,
+      roleId,
+    })
+    .returning(userPublicColumns());
   return c.json(user, HttpStatusCodes.CREATED);
 };
 
 export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
-  const { email, password, username, roleId } = c.req.valid("json");
-  const [user] = await db.update(users).set({
-    email,
-    password,
-    username,
-    roleId
-  }).where(eq(users.id, id)).returning(publicColumns());
+  const { email, username, roleId } = c.req.valid("json");
+  const [user] = await db
+    .update(users)
+    .set({
+      email,
+      username,
+      roleId,
+    })
+    .where(eq(users.id, id))
+    .returning(userPublicColumns());
 
   if (!user) {
     return c.json(
@@ -63,7 +81,10 @@ export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
 
 export const deleteOne: AppRouteHandler<DeleteOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
-  const [user] = await db.delete(users).where(eq(users.id, id)).returning(publicColumns());
+  const [user] = await db
+    .delete(users)
+    .where(eq(users.id, id))
+    .returning(userPublicColumns());
   if (!user) {
     return c.json(
       {
@@ -72,8 +93,5 @@ export const deleteOne: AppRouteHandler<DeleteOneRoute> = async (c) => {
       HttpStatusCodes.NOT_FOUND,
     );
   }
-  return c.json(
-    user,
-    HttpStatusCodes.OK,
-  );
+  return c.json(user, HttpStatusCodes.OK);
 };

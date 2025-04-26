@@ -9,7 +9,7 @@ export default defineConfig({
   adapter: honoAstro(),
   output: "server",
   outDir: "../backend/static/docs",
-  base: "/docs",
+  base: process.env.NODE_ENV === "production" ? "/docs" : "/",
   vite: {
     plugins: [tailwindcss()],
   },

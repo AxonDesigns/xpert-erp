@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@repo/env": "workspace:*",
     "@tailwindcss/vite": "^4.1.4",
     "astro": "^5.7.5",
     "axios": "^1.8.4",
