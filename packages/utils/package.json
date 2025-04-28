@@ -1,0 +1,20 @@
+{
+  "name": "@repo/utils",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@repo/typescript": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
