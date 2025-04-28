@@ -1,5 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import apiClient from '@repo/api-client';
+import { Button } from '@frontend/components/ui/button';
+import { AnimatePresence, motion } from 'motion/react';
+import { useTheme } from './hooks/theme';
+import { Moon, Stars, Sun } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from './components/animated-dialog';
+import { capitalize } from '@repo/utils';
 
 function App() {
   useEffect(() => {
@@ -30,9 +36,49 @@ function App() {
     test();
   }, []);
 
+  const [open, setOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
   return (
     <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent layoutId='login-test'>
+          <DialogTitle>{capitalize(theme)}</DialogTitle>
+          <DialogDescription>Login to your account</DialogDescription>
+          <div className='flex gap-2'>
+            <Button onClick={() => setTheme('system')}>
+              <Stars />
+            </Button>
+            <Button onClick={() => setTheme('light')}>
+              <Sun />
+            </Button>
+            <Button onClick={() => setTheme('dark')}>
+              <Moon />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <div className='flex flex-col items-center justify-center h-dvh'>
+        <AnimatePresence>
+          <motion.div layoutId='login-test'
+            animate={{
+              opacity: open ? 0 : 1,
+            }}
+            transition={{
+              type: "tween",
+              ease: [0, 1.0, 0.3, 1.0],
+              duration: 0.4,
+            }}
+          >
+            <Button
+              onClick={() => setOpen(true)}
+            >
+              Login
+            </Button>
+          </motion.div>
+        </AnimatePresence>
 
+      </div>
     </>
   )
 }
