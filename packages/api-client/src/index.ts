@@ -1,4 +1,4 @@
-import type { AppType } from "@repo/backend/client";
+import type { AppType } from "@repo/backend/app";
 
 import { hc } from "hono/client";
 

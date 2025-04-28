@@ -1,19 +1,19 @@
 {
   "extends": "@repo/typescript/base.json",
   "compilerOptions": {
-    "rootDir": "src",
+    "strict": true,
+    "baseUrl": ".",
     "paths": {
       "@backend/*": ["../../apps/backend/src/*"],
-      "@env/*": [
-        "../env/src/*"
-      ]
+      "@env/*": ["../../packages/env/src/*"]
     },
+    "allowImportingTsExtensions": null,
+    "noEmit": false,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "dist",
+    "outDir": "./dist",
   },
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "**/apps/frontend"]
-  },
-  "include": ["src"]
+  }
 }

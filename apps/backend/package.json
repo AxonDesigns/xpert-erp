@@ -10,12 +10,14 @@
     "db:studio": "bun run drizzle-kit studio",
     "db:reset": "bun run drizzle-kit reset",
     "start": "bun run src/index.ts",
+    "typeGen": "tsc --declaration",
+    "build:watch": "tsc -w",
     "test": "bun run test"
   },
   "exports": {
     "./types/*": "./src/db/types/*.ts",
     "./validators/*": "./src/validators/*.ts",
-    "./client": "./src/client.ts"
+    "./app": "./src/app.ts"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",

@@ -11,13 +11,17 @@ import { env } from "@env/backend";
 const app = createApp();
 configureOpenAPI(app);
 
-
 const routes = [index, users, roles, authRoute] as const;
 
-app.use("/api/*", cors({
-  origin: env.TRUSTED_ORIGINS,
-  credentials: true,
-}));
+app.use(
+  "/api/*",
+  cors({
+    origin: env.TRUSTED_ORIGINS,
+    credentials: true,
+    allowHeaders: ["*"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+  }),
+);
 app.use("/api/*", auth);
 
 for (const route of routes) {
