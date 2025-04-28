@@ -18,7 +18,10 @@ import * as HttpStatusCodes from "stoker/http-status-codes";
 export const login: AppRouteHandler<LoginRoute> = async (c) => {
   const { email, password } = c.req.valid("json");
 
-  const [user] = await db.select().from(userTable).where(eq(userTable.email, email));
+  const [user] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.email, email));
 
   if (!user) {
     return c.json(
@@ -42,22 +45,29 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
 
   const { otpSecret, password: _, ...publicUser } = user;
 
-  const token = await sign({
-    user: publicUser,
-    exp: Math.floor(Date.now() / 1000) + env.ACCESS_TOKEN_EXPIRES_IN, // seconds
-  },
+  const token = await sign(
+    {
+      user: publicUser,
+      exp: Math.floor(Date.now() / 1000) + env.ACCESS_TOKEN_EXPIRES_IN, // seconds
+    },
     env.ACCESS_TOKEN_SECRET,
-    "HS256"
+    "HS256",
   );
 
-  await setSignedCookie(c, "access_token", token, env.ACCESS_TOKEN_COOKIE_SECRET, {
-    path: "/",
-    httpOnly: true,
-    maxAge: env.ACCESS_TOKEN_EXPIRES_IN * 1000, // milliseconds
-    expires: new Date(Date.now() + env.ACCESS_TOKEN_EXPIRES_IN * 1000), // milliseconds
-    sameSite: "lax",
-    secure: env.NODE_ENV === "production",
-  });
+  await setSignedCookie(
+    c,
+    "access_token",
+    token,
+    env.ACCESS_TOKEN_COOKIE_SECRET,
+    {
+      path: "/",
+      httpOnly: true,
+      maxAge: env.ACCESS_TOKEN_EXPIRES_IN * 1000, // milliseconds
+      expires: new Date(Date.now() + env.ACCESS_TOKEN_EXPIRES_IN * 1000), // milliseconds
+      sameSite: "lax",
+      secure: env.NODE_ENV === "production",
+    },
+  );
 
   return c.json(publicUser, HttpStatusCodes.OK);
 };
@@ -65,7 +75,10 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
 export const register: AppRouteHandler<RegisterRoute> = async (c) => {
   const { username, email, password, roleId } = c.req.valid("json");
 
-  const [user] = await db.select().from(userTable).where(eq(userTable.email, email));
+  const [user] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.email, email));
 
   if (user) {
     return c.json(
@@ -78,12 +91,15 @@ export const register: AppRouteHandler<RegisterRoute> = async (c) => {
 
   const hashedPassword = await Bun.password.hash(password);
 
-  const [createdUser] = await db.insert(userTable).values({
-    username,
-    email,
-    password: hashedPassword,
-    roleId,
-  }).returning(userPublicColumns());
+  const [createdUser] = await db
+    .insert(userTable)
+    .values({
+      username,
+      email,
+      password: hashedPassword,
+      roleId,
+    })
+    .returning(userPublicColumns());
 
   if (!createdUser) {
     return c.json(
@@ -94,10 +110,7 @@ export const register: AppRouteHandler<RegisterRoute> = async (c) => {
     );
   }
 
-  return c.json(
-    createdUser,
-    HttpStatusCodes.CREATED,
-  );
+  return c.json(createdUser, HttpStatusCodes.CREATED);
 };
 
 export const me: AppRouteHandler<MeRoute> = async (c) => {
