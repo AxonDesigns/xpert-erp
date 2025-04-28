@@ -1,5 +1,5 @@
 import db from "@backend/db";
-import roles from "@backend/db/schema/roles";
+import roleTable from "@backend/db/schema/roles";
 import type { AppRouteHandler } from "@backend/lib/types";
 import type {
   CreateRoute,
@@ -12,14 +12,14 @@ import { eq, getTableColumns, sql } from "drizzle-orm";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 
 const publicColumns = () => {
-  const { ...columns } = getTableColumns(roles);
+  const { ...columns } = getTableColumns(roleTable);
   return columns;
 };
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const userList = await db
     .select(publicColumns())
-    .from(roles)
+    .from(roleTable)
     .limit(10)
     .offset(0);
   return c.json(userList, HttpStatusCodes.OK);
@@ -29,8 +29,8 @@ export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const [user] = await db
     .select(publicColumns())
-    .from(roles)
-    .where(eq(roles.id, id));
+    .from(roleTable)
+    .where(eq(roleTable.id, id));
   if (!user) {
     return c.json(
       {
@@ -46,7 +46,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const { name, description } = c.req.valid("json");
 
   const [role] = await db
-    .insert(roles)
+    .insert(roleTable)
     .values({
       name,
       description,
@@ -59,12 +59,12 @@ export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const { name, description } = c.req.valid("json");
   const [role] = await db
-    .update(roles)
+    .update(roleTable)
     .set({
       name,
       description,
     })
-    .where(eq(roles.id, id))
+    .where(eq(roleTable.id, id))
     .returning(publicColumns());
 
   if (!role) {
@@ -81,8 +81,8 @@ export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
 export const deleteOne: AppRouteHandler<DeleteOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const [role] = await db
-    .delete(roles)
-    .where(eq(roles.id, id))
+    .delete(roleTable)
+    .where(eq(roleTable.id, id))
     .returning(publicColumns());
   if (!role) {
     return c.json(

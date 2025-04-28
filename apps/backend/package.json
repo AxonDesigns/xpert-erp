@@ -14,11 +14,14 @@
   },
   "exports": {
     "./types/*": "./src/db/types/*.ts",
-    "./validators/*": "./src/validators/*.ts"
+    "./validators/*": "./src/validators/*.ts",
+    "./client": "./src/client.ts"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
     "@hono/zod-openapi": "^0.19.5",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
     "@repo/env": "workspace:*",
     "@scalar/hono-api-reference": "^0.8.2",
     "drizzle-orm": "^0.42.0",

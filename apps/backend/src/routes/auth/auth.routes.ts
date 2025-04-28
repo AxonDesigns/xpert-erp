@@ -14,7 +14,7 @@ import {
   IdParamsSchema,
 } from "stoker/openapi/schemas";
 
-const tags = ["users"];
+const tags = ["auth"];
 
 export const login = createRoute({
   path: "/auth/login",
@@ -55,9 +55,33 @@ export const register = createRoute({
       selectPublicUserSchema,
       "Registered user",
     ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      createMessageObjectSchema(HttpStatusPhrases.CONFLICT),
+      "User already exists",
+    ),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      createMessageObjectSchema(HttpStatusPhrases.INTERNAL_SERVER_ERROR),
+      "User could not be created",
+    ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(selectPublicUserSchema),
       "Invalid user",
+    ),
+  },
+});
+
+export const me = createRoute({
+  path: "/auth/me",
+  method: "get",
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      selectPublicUserSchema,
+      "Authenticated user",
+    ),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(
+      createMessageObjectSchema(HttpStatusPhrases.UNAUTHORIZED),
+      "Unauthorized",
     ),
   },
 });
@@ -70,14 +94,11 @@ export const logout = createRoute({
     [HttpStatusCodes.OK]: jsonContent(
       createMessageObjectSchema(HttpStatusPhrases.OK),
       "Logout successful",
-    ),
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(
-      createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND),
-      "User was not found",
-    ),
+    )
   },
 });
 
 export type LoginRoute = typeof login;
 export type RegisterRoute = typeof register;
+export type MeRoute = typeof me;
 export type LogoutRoute = typeof logout;

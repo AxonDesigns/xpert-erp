@@ -55,7 +55,7 @@ export const create = createRoute({
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(
       selectPublicUserSchema,
-      "User",
+      "Create user",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(selectPublicUserSchema),
@@ -78,7 +78,7 @@ export const updateOne = createRoute({
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
       selectPublicUserSchema,
-      "User",
+      "Updated user",
     ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND),

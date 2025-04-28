@@ -10,6 +10,8 @@ export const envSchema = commonEnvSchema.extend({
   ADMIN_EMAIL: z.string().email(),
   ADMIN_PASSWORD: z.string(),
   ACCESS_TOKEN_SECRET: z.string(),
+  ACCESS_TOKEN_EXPIRES_IN: z.coerce.number(),
+  ACCESS_TOKEN_COOKIE_SECRET: z.string(),
   TRUSTED_ORIGINS: z.preprocess(
     (rawData) => {
       const data = rawData as string | undefined;

@@ -1,0 +1,19 @@
+{
+  "extends": "@repo/typescript/base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "paths": {
+      "@backend/*": ["../../apps/backend/src/*"],
+      "@env/*": [
+        "../env/src/*"
+      ]
+    },
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+  },
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules", "**/apps/frontend"]
+  },
+  "include": ["src"]
+}

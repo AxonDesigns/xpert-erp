@@ -55,7 +55,7 @@ export const create = createRoute({
     body: jsonContentRequired(insertRoleSchema, "Role to create"),
   },
   responses: {
-    [HttpStatusCodes.CREATED]: jsonContent(selectRoleSchema, "Role"),
+    [HttpStatusCodes.CREATED]: jsonContent(selectRoleSchema, "Created role"),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(selectRoleSchema),
       "Invalid role",
@@ -72,7 +72,7 @@ export const updateOne = createRoute({
     body: jsonContentRequired(updateRoleSchema, "Role to update"),
   },
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(selectRoleSchema, "Role"),
+    [HttpStatusCodes.OK]: jsonContent(selectRoleSchema, "Updated role"),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND),
       "Role was not found",

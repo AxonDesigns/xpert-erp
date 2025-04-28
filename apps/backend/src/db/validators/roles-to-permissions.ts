@@ -1,4 +1,4 @@
-import rolesToPermissions from "@backend/db/schema/roles-to-permissions";
+import roleToPermissionTable from "@backend/db/schema/roles-to-permissions";
 import {
   createInsertSchema,
   createSelectSchema,
@@ -6,8 +6,8 @@ import {
 } from "drizzle-zod";
 
 export const insertRoleToPermissionSchema =
-  createInsertSchema(rolesToPermissions);
+  createInsertSchema(roleToPermissionTable);
 export const selectRoleToPermissionSchema =
-  createSelectSchema(rolesToPermissions);
+  createSelectSchema(roleToPermissionTable);
 export const updateRoleToPermissionSchema =
-  createUpdateSchema(rolesToPermissions);
+  createUpdateSchema(roleToPermissionTable);

@@ -1,4 +1,4 @@
-import roles from "@backend/db/schema/roles";
+import roleTable from "@backend/db/schema/roles";
 import {
   createInsertSchema,
   createSelectSchema,
@@ -30,14 +30,14 @@ const updatedAtDetails = {
   example: "2023-07-01T00:00:00.000Z",
 };
 
-export const selectRoleSchema = createSelectSchema(roles, {
+export const selectRoleSchema = createSelectSchema(roleTable, {
   id: (schema) => schema.openapi(idDetails),
   name: (schema) => schema.openapi(nameDetails),
   description: (schema) => schema.openapi(descriptionDetails),
   createdAt: (schema) => schema.openapi(createdAtDetails),
   updatedAt: (schema) => schema.openapi(updatedAtDetails),
 });
-export const insertRoleSchema = createInsertSchema(roles, {
+export const insertRoleSchema = createInsertSchema(roleTable, {
   name: (schema) => schema.openapi(nameDetails),
   description: (schema) => schema.openapi(descriptionDetails),
 }).omit({
@@ -45,7 +45,7 @@ export const insertRoleSchema = createInsertSchema(roles, {
   createdAt: true,
   updatedAt: true,
 });
-export const updateRoleSchema = createUpdateSchema(roles, {
+export const updateRoleSchema = createUpdateSchema(roleTable, {
   name: (schema) => schema.openapi(nameDetails),
   description: (schema) => schema.openapi(descriptionDetails),
 }).omit({

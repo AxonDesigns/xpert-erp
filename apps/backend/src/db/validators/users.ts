@@ -1,4 +1,4 @@
-import users from "@backend/db/schema/users";
+import userTable from "@backend/db/schema/users";
 import { getTableColumns } from "drizzle-orm";
 import {
   createInsertSchema,
@@ -10,6 +10,7 @@ const idDetails = {
   description: "User's id",
   examples: [1, 2, 3],
 };
+
 const emailDetails = {
   description: "User's email",
   example: "john@doe.com",
@@ -40,7 +41,7 @@ const updatedAtDetails = {
   example: "2023-07-01T00:00:00.000Z",
 };
 
-export const insertUserSchema = createInsertSchema(users, {
+export const insertUserSchema = createInsertSchema(userTable, {
   email: (schema) => schema.email(),
   password: (schema) =>
     schema
@@ -59,7 +60,7 @@ export const insertUserSchema = createInsertSchema(users, {
   otpSecret: true,
 });
 
-export const selectUserSchema = createSelectSchema(users, {
+export const selectUserSchema = createSelectSchema(userTable, {
   id: (schema) =>
     schema.openapi({ description: "User's id" }).openapi(idDetails),
   email: (schema) => schema.email().openapi(emailDetails),
@@ -74,7 +75,7 @@ export const selectPublicUserSchema = selectUserSchema.omit({
   otpSecret: true,
 });
 
-export const updateUserSchema = createUpdateSchema(users, {
+export const updateUserSchema = createUpdateSchema(userTable, {
   email: (schema) => schema.email().openapi(emailDetails),
   username: (schema) => schema.openapi(usernameDetails),
   roleId: (schema) => schema.openapi(roleIdDetails),
@@ -87,6 +88,6 @@ export const updateUserSchema = createUpdateSchema(users, {
 });
 
 export const userPublicColumns = () => {
-  const { otpSecret, password, ...columns } = getTableColumns(users);
+  const { otpSecret, password, ...columns } = getTableColumns(userTable);
   return columns;
 };

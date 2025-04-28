@@ -1,5 +1,5 @@
 import db from "@backend/db";
-import users from "@backend/db/schema/users";
+import userTable from "@backend/db/schema/users";
 import { userPublicColumns } from "@backend/db/validators/users";
 import type { AppRouteHandler } from "@backend/lib/types";
 import type {
@@ -15,7 +15,7 @@ import * as HttpStatusCodes from "stoker/http-status-codes";
 export const list: AppRouteHandler<ListRoute> = async (c) => {
   const userList = await db
     .select(userPublicColumns())
-    .from(users)
+    .from(userTable)
     .limit(10)
     .offset(0);
   return c.json(userList, HttpStatusCodes.OK);
@@ -25,8 +25,8 @@ export const getOne: AppRouteHandler<GetOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const [user] = await db
     .select(userPublicColumns())
-    .from(users)
-    .where(eq(users.id, id));
+    .from(userTable)
+    .where(eq(userTable.id, id));
   if (!user) {
     return c.json(
       {
@@ -44,7 +44,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const hashedPassword = await Bun.password.hash(password, "bcrypt");
 
   const [user] = await db
-    .insert(users)
+    .insert(userTable)
     .values({
       email,
       password: hashedPassword,
@@ -59,13 +59,13 @@ export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const { email, username, roleId } = c.req.valid("json");
   const [user] = await db
-    .update(users)
+    .update(userTable)
     .set({
       email,
       username,
       roleId,
     })
-    .where(eq(users.id, id))
+    .where(eq(userTable.id, id))
     .returning(userPublicColumns());
 
   if (!user) {
@@ -82,8 +82,8 @@ export const updateOne: AppRouteHandler<UpdateOneRoute> = async (c) => {
 export const deleteOne: AppRouteHandler<DeleteOneRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const [user] = await db
-    .delete(users)
-    .where(eq(users.id, id))
+    .delete(userTable)
+    .where(eq(userTable.id, id))
     .returning(userPublicColumns());
   if (!user) {
     return c.json(

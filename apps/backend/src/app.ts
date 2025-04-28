@@ -3,14 +3,25 @@ import { createApp } from "@backend/lib/create-app";
 import index from "@backend/routes/index.route";
 import users from "@backend/routes/users/users.index";
 import roles from "@backend/routes/roles/roles.index";
+import authRoute from "@backend/routes/auth/auth.index";
+import auth from "@backend/middlewares/auth";
+import { cors } from "hono/cors";
+import { env } from "@env/backend";
 
 const app = createApp();
 configureOpenAPI(app);
 
-const routes = [index, users, roles] as const;
+
+const routes = [index, users, roles, authRoute] as const;
+
+app.use("/api/*", cors({
+  origin: env.TRUSTED_ORIGINS,
+  credentials: true,
+}));
+app.use("/api/*", auth);
 
 for (const route of routes) {
-  app.route("/", route);
+  app.route("/api", route);
 }
 
 export type AppType = (typeof routes)[number];

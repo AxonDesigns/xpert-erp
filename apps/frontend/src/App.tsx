@@ -1,15 +1,11 @@
 import { useEffect } from 'react';
-import api from '@frontend/lib/axios';
-import { AxiosError } from 'axios';
+import apiClient from '@repo/api-client'
 
 function App() {
   useEffect(() => {
-    try {
-      api.get('/')
-    } catch (error) {
-      if (error instanceof AxiosError)
-        console.error(error.response);
-    }
+    const client = apiClient('http://localhost:3000/api/');
+
+    client.users.$get().then((res) => res.json()).then(e => console.log(e));
   }, []);
 
   return (

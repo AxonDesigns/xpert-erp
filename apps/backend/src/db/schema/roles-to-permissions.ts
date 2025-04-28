@@ -1,16 +1,16 @@
 import { id, timestamps } from "@backend/db/lib/utils";
-import permissions from "@backend/db/schema/permissions";
-import roles from "@backend/db/schema/roles";
+import permissionTable from "@backend/db/schema/permissions";
+import roleTable from "@backend/db/schema/roles";
 import { pgTable, primaryKey } from "drizzle-orm/pg-core";
 
-const rolesToPermissions = pgTable(
+const roleToPermissionTable = pgTable(
   "roles_to_permissions",
   {
     roleId: id("role_id")
-      .references(() => roles.id)
+      .references(() => roleTable.id)
       .notNull(),
     permissionId: id("permission_id")
-      .references(() => permissions.id)
+      .references(() => permissionTable.id)
       .notNull(),
     ...timestamps,
   },
@@ -21,4 +21,4 @@ const rolesToPermissions = pgTable(
   ],
 );
 
-export default rolesToPermissions;
+export default roleToPermissionTable;
