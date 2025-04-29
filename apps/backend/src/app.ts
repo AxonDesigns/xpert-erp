@@ -13,15 +13,16 @@ configureOpenAPI(app);
 
 const routes = [index, users, roles, authRoute] as const;
 
+console.log(env.TRUSTED_ORIGINS);
+
 app.use(
-  "/api/*",
+  "/*",
   cors({
     origin: env.TRUSTED_ORIGINS,
     credentials: true,
-    allowHeaders: ["*"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
+
 app.use("/api/*", auth);
 
 for (const route of routes) {

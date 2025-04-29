@@ -1,12 +1,20 @@
-import path from 'node:path'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import tailwindcss from "@tailwindcss/vite"
-import { env } from '@repo/env/frontend';
+import path from "node:path";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { env } from "@repo/env/frontend";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    TanStackRouterVite({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
+    react(),
+    tailwindcss(),
+  ],
   server: {
     host: env.FRONTEND_HOST,
     port: env.FRONTEND_PORT,
@@ -24,4 +32,4 @@ export default defineConfig({
       "@env": path.resolve(__dirname, "../../packages/env/src"),
     },
   },
-})
+});

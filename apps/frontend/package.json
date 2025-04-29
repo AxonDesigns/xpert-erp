@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@repo/utils": "workspace:*",
     "@biomejs/biome": "^1.9.4",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-popover": "^1.1.11",
@@ -19,7 +18,10 @@
     "@repo/api-client": "workspace:*",
     "@repo/backend": "workspace:*",
     "@repo/env": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/react-router": "^1.117.1",
+    "@tanstack/react-router-devtools": "^1.117.1",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -35,6 +37,7 @@
   },
   "devDependencies": {
     "@repo/typescript": "workspace:*",
+    "@tanstack/router-plugin": "^1.117.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react-swc": "^3.8.0",

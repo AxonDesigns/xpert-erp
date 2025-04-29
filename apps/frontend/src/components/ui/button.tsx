@@ -3,9 +3,17 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@frontend/lib/utils"
+import {
+  AnimatePresence,
+  type AnimationControls,
+  motion,
+  type TargetAndTransition,
+  type VariantLabels,
+  type Transition,
+} from 'motion/react';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
@@ -35,7 +43,7 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
+function ButtonOLD({
   className,
   variant,
   size,
@@ -53,6 +61,51 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
+  )
+}
+
+function Button({
+  className,
+  variant,
+  size,
+  layoutId,
+  children,
+  onDrag,
+  onDragStart,
+  onDragEnd,
+  onAnimationStart,
+  transition = {
+    type: "tween",
+    ease: [0, 1.0, 0.3, 1.0],
+    duration: 0.4,
+  },
+  initial = { opacity: 0 },
+  animate = { opacity: 1 },
+  exit = { opacity: 0 },
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    layoutId?: string | undefined,
+    transition?: Transition | undefined,
+    initial?: boolean | TargetAndTransition | VariantLabels | undefined,
+    animate?: boolean | TargetAndTransition | VariantLabels | AnimationControls | undefined,
+    exit?: TargetAndTransition | VariantLabels | undefined,
+  }) {
+  return (
+    <AnimatePresence>
+      <motion.button
+        data-slot="button"
+        layoutId={layoutId}
+        transition={transition}
+        initial={initial}
+        animate={animate}
+        exit={exit}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      >
+        {children}
+      </motion.button>
+    </AnimatePresence>
   )
 }
 
