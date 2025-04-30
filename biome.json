@@ -7,7 +7,9 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": [
+      "./apps/frontend/src/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -38,9 +40,6 @@
     {
       "include": [
         "apps/frontend/**"
-      ],
-      "ignore": [
-        "apps/frontend/src/routeTree.gen.ts"
       ],
       "linter": {
         "rules": {

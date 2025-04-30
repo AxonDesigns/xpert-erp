@@ -58,16 +58,20 @@ function RouteComponent() {
           'm-2 flex flex-col gap-2 w-60',
           'bg-surface-1 rounded-lg shadow-md shadow-black/15',
         )}>
-          <div className='m-4'>
+          <div className='m-2'>
             <Popover>
-              <PopoverTrigger>
+              <PopoverTrigger className='flex gap-2 items-center w-full bg-surface-2 p-2 rounded-sm'>
                 <picture>
                   <img
                     src='https://picsum.photos/id/1003/200/300'
                     alt='Profile'
-                    className='w-12 h-12 object-cover'
+                    className='w-10 h-10 object-cover rounded-xs'
                   />
                 </picture>
+                <div className='flex-1 flex flex-col justify-center'>
+                  <span className='text-left'>Username</span>
+                  <span className='text-left text-xs text-muted-foreground'>email@email.com</span>
+                </div>
               </PopoverTrigger>
             </Popover>
           </div>
@@ -83,23 +87,36 @@ function RouteComponent() {
             >
               Login
             </Button>
-            <ButtonGroup>
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-sm'>
+            <ButtonGroup
+              content={(
+                <>
+                  <Home />
+                  <span>Option 1</span>
+                </>
+              )}
+            >
+              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
                 Option 1
               </Button>
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-sm'>
+              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
                 Option 2
               </Button>
             </ButtonGroup>
-            <Button
-              variant="outline"
-              className='group justify-start'
-              data-open={false}
+            <ButtonGroup
+              content={(
+                <>
+                  <Home />
+                  <span>Option 2</span>
+                </>
+              )}
             >
-              <User />
-              <span className='flex-1 text-left'>Option 2</span>
-              <ChevronDown className='group-data-[open=true]:rotate-180' />
-            </Button>
+              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
+                Option 1
+              </Button>
+              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
+                Option 2
+              </Button>
+            </ButtonGroup>
           </div>
           <div className='bg-surface-2 m-2 p-2 rounded-md'>
             <div className='bg-surface-3 p-2 rounded-sm'>
