@@ -24,7 +24,9 @@ const getTokenFromCookie = async <T extends Env>(c: Context<T>) => {
   return token;
 };
 
-const publicRoutes = ["/api/auth/login"];
+const publicRoutes = [
+  "/api/auth/login",
+];
 
 const auth = createMiddleware<AppBindings>(async (c, next) => {
   if (
@@ -43,7 +45,7 @@ const auth = createMiddleware<AppBindings>(async (c, next) => {
       const { user } = await verify(token, env.ACCESS_TOKEN_SECRET, "HS256");
       c.set("user", user as PublicUser);
       return next();
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return c.json(

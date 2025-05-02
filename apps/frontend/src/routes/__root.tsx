@@ -1,5 +1,5 @@
 //import { AnimatedOutlet, AnimatedOutletWrapper } from '@frontend/lib/transitions'
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 export const Route = createRootRoute({

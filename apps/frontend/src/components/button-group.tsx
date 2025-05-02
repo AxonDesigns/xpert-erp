@@ -17,10 +17,10 @@ const ButtonGroup = ({ children, content }: ButtonGroupProps) => {
       data-open={open}
       onClick={() => setOpen(!open)}
     >
+      <ChevronDown className='group-data-[open=true]:rotate-180 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]' />
       <div className="flex-1 flex gap-2 items-center justify-start">
         {content}
       </div>
-      <ChevronDown className='group-data-[open=true]:rotate-180 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]' />
     </Button>
     <motion.div
       data-open={open}

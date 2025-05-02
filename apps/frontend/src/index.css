@@ -139,9 +139,15 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: var(--foreground) var(--background);
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-hidden h-dvh;
+  }
+
+  .popover-trigger-width {
+    min-width: var(--radix-popover-trigger-width);
   }
 
   input:-webkit-autofill,

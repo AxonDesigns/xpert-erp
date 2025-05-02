@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import apiClient from '@repo/api-client';
 import { Button } from '@frontend/components/ui/button';
 import { useTheme } from '@frontend/hooks/theme';
-import { ChevronDown, Home, Moon, Stars, Sun, User } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@frontend/components/animated-dialog';
+import { Activity, ChartPie, ChevronDown, Grid, Home, LayoutPanelLeft, Moon, Stars, Sun, User, Users } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@frontend/components/animated-dialog';
 import { capitalize } from '@repo/utils';
 import { createFileRoute } from '@tanstack/react-router'
 import { cn } from '@frontend/lib/utils';
-import { Popover, PopoverTrigger } from '@frontend/components/ui/popover';
-import ButtonGroup from '@frontend/components/button-group';
+import { Popover, PopoverContent, PopoverTrigger } from '@frontend/components/ui/popover';
+import { SidebarSection, SidebarSectionContent, SidebarSectionOption, SidebarSectionTrigger } from '@frontend/components/sidebar-section';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -60,69 +60,99 @@ function RouteComponent() {
         )}>
           <div className='m-2'>
             <Popover>
-              <PopoverTrigger className='flex gap-2 items-center w-full bg-surface-2 p-2 rounded-sm'>
-                <picture>
-                  <img
-                    src='https://picsum.photos/id/1003/200/300'
-                    alt='Profile'
-                    className='w-10 h-10 object-cover rounded-xs'
-                  />
-                </picture>
-                <div className='flex-1 flex flex-col justify-center'>
-                  <span className='text-left'>Username</span>
-                  <span className='text-left text-xs text-muted-foreground'>email@email.com</span>
-                </div>
+              <PopoverTrigger className='flex gap-2 items-center w-full p-2 rounded-sm h-auto' asChild>
+                <Button variant="ghost">
+                  <picture>
+                    <img
+                      src='avatar.png'
+                      alt='Profile'
+                      className='w-10 h-10 object-cover rounded-xs'
+                    />
+                  </picture>
+                  <div className='flex-1 flex flex-col justify-center'>
+                    <span className='text-left'>Username</span>
+                    <span className='text-left text-xs text-muted-foreground'>email@email.com</span>
+                  </div>
+                </Button>
               </PopoverTrigger>
+              <PopoverContent className=''>
+                Hola
+              </PopoverContent>
             </Popover>
           </div>
           <div className='flex-1 flex flex-col gap-2 mx-2'>
             <Button
               onClick={() => setOpen(true)}
-              layoutId='login-test'
-              transition={{
-                type: "tween",
-                ease: [0, 1.0, 0.3, 1.0],
-                duration: 0.2,
-              }}
             >
               Login
             </Button>
-            <ButtonGroup
-              content={(
-                <>
+            <SidebarSection>
+              <SidebarSectionTrigger>
+                <span>Administration</span>
+              </SidebarSectionTrigger>
+              <SidebarSectionContent>
+                <SidebarSectionOption selected>
+                  <LayoutPanelLeft />
+                  <span>Dashboard</span>
+                </SidebarSectionOption>
+                <SidebarSectionOption >
+                  <Activity />
+                  <span>Activity</span>
+                </SidebarSectionOption>
+              </SidebarSectionContent>
+            </SidebarSection>
+            <SidebarSection>
+              <SidebarSectionTrigger>
+                <h1>Inventory</h1>
+              </SidebarSectionTrigger>
+              <SidebarSectionContent>
+                <SidebarSectionOption>
+                  <ChartPie />
+                  <span>Stock</span>
+                </SidebarSectionOption>
+                <SidebarSectionOption >
                   <Home />
-                  <span>Option 1</span>
-                </>
-              )}
-            >
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
-                Option 1
-              </Button>
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
-                Option 2
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup
-              content={(
-                <>
+                  <span>Products</span>
+                </SidebarSectionOption>
+              </SidebarSectionContent>
+            </SidebarSection>
+            <SidebarSection>
+              <SidebarSectionTrigger>
+                <h1>Human Resources</h1>
+              </SidebarSectionTrigger>
+              <SidebarSectionContent>
+                <SidebarSectionOption>
+                  <Users />
+                  <span>Personnel</span>
+                </SidebarSectionOption>
+                <SidebarSectionOption >
                   <Home />
                   <span>Option 2</span>
-                </>
-              )}
-            >
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
-                Option 1
-              </Button>
-              <Button variant="ghost" className='flex-1 justify-start h-auto text-xs'>
-                Option 2
-              </Button>
-            </ButtonGroup>
+                </SidebarSectionOption>
+              </SidebarSectionContent>
+            </SidebarSection>
           </div>
-          <div className='bg-surface-2 m-2 p-2 rounded-md'>
-            <div className='bg-surface-3 p-2 rounded-sm'>
-              <span>Hello</span>
-            </div>
-          </div>
+          <Popover>
+            <PopoverTrigger className='flex gap-2 items-center p-2 rounded-sm h-auto m-2' asChild>
+              <Button className='bg-surface-2 hover:bg-surface-3 text-foreground'>
+                <picture>
+                  <img
+                    src='avatar.png'
+                    alt='Profile'
+                    className='w-9 h-9 object-cover rounded-xs'
+                  />
+                </picture>
+                <div className='flex-1 flex flex-col justify-center'>
+                  <span className='text-left text-sm'>Username</span>
+                  <span className='text-left text-xs text-muted-foreground'>email@email.com</span>
+                </div>
+              </Button>
+
+            </PopoverTrigger>
+            <PopoverContent className='popover-trigger-width'>
+
+            </PopoverContent>
+          </Popover>
 
         </aside>
         <main className='flex-1'>
