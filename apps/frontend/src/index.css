@@ -61,10 +61,10 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.9 0 0);
   --foreground: oklch(0.145 0 0);
-  --surface-0: oklch(0.96 0 0);
-  --surface-1: oklch(0.98 0 0);
+  --surface-0: oklch(0.9 0 0);
+  --surface-1: oklch(0.95 0 0);
   --surface-2: oklch(1 0 0);
   --surface-3: oklch(1 0 0);
   --card: oklch(1 0 0);

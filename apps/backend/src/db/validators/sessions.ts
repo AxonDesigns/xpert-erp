@@ -3,8 +3,8 @@ import { createInsertSchema, createSelectSchema, createUpdateSchema } from "driz
 
 export const selectSessionSchema = createSelectSchema(sessionTable);
 export const insertSessionSchema = createInsertSchema(sessionTable, {
-  id: (schema) => schema.openapi({ description: "Session's id" }),
-  userId: (schema) => schema.openapi({ description: "User's id" }),
-  expiresAt: (schema) => schema.openapi({ description: "Session's expiration date" }),
+  id: (schema) => schema,
+  userId: (schema) => schema,
+  expiresAt: (schema) => schema,
 });
 export const updateSessionSchema = createUpdateSchema(sessionTable);

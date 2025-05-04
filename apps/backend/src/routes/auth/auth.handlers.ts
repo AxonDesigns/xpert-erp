@@ -11,7 +11,7 @@ import type {
 } from "@backend/routes/auth/auth.routes";
 import { env } from "@env/backend";
 import { eq } from "drizzle-orm";
-import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { sign, verify } from "hono/jwt";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 
@@ -54,18 +54,17 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
     "HS256",
   );
 
-  await setSignedCookie(
+  setCookie(
     c,
     "access_token",
     token,
-    env.ACCESS_TOKEN_COOKIE_SECRET,
     {
       path: "/",
       httpOnly: true,
       maxAge: env.ACCESS_TOKEN_EXPIRES_IN * 1000, // milliseconds
       expires: new Date(Date.now() + env.ACCESS_TOKEN_EXPIRES_IN * 1000), // milliseconds
-      sameSite: "lax",
-      secure: env.NODE_ENV === "production",
+      sameSite: "none",
+      secure: true,
     },
   );
 

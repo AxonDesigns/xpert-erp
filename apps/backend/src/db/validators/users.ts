@@ -1,3 +1,4 @@
+import 'zod-openapi/extend';
 import userTable from "@backend/db/schema/users";
 import { getTableColumns } from "drizzle-orm";
 import {
@@ -42,7 +43,7 @@ const updatedAtDetails = {
 };
 
 export const insertUserSchema = createInsertSchema(userTable, {
-  email: (schema) => schema.email(),
+  email: (schema) => schema.email().openapi(emailDetails),
   password: (schema) =>
     schema
       .regex(
@@ -52,7 +53,7 @@ export const insertUserSchema = createInsertSchema(userTable, {
       .min(8, "Password must be at least 8 characters long.")
       .max(255, "Password must be at most 255 characters long.")
       .openapi(passwordDetails),
-  roleId: (schema) => schema.openapi({ description: "User's role id" }),
+  roleId: (schema) => schema.openapi(roleIdDetails),
 }).omit({
   id: true,
   createdAt: true,
@@ -61,13 +62,12 @@ export const insertUserSchema = createInsertSchema(userTable, {
 });
 
 export const selectUserSchema = createSelectSchema(userTable, {
-  id: (schema) =>
-    schema.openapi({ description: "User's id" }).openapi(idDetails),
+  id: (schema) => schema.openapi(idDetails),
   email: (schema) => schema.email().openapi(emailDetails),
   username: (schema) => schema.openapi(usernameDetails),
-  roleId: (schema) => schema.openapi(roleIdDetails),
-  createdAt: (schema) => schema.openapi(createdAtDetails),
-  updatedAt: (schema) => schema.openapi(updatedAtDetails),
+  roleId: (schema) => schema.openapi(roleIdDetails).openapi(roleIdDetails),
+  createdAt: (schema) => schema.openapi(createdAtDetails).openapi(createdAtDetails),
+  updatedAt: (schema) => schema.openapi(updatedAtDetails).openapi(updatedAtDetails),
 });
 
 export const selectPublicUserSchema = selectUserSchema.omit({
@@ -79,6 +79,7 @@ export const updateUserSchema = createUpdateSchema(userTable, {
   email: (schema) => schema.email().openapi(emailDetails),
   username: (schema) => schema.openapi(usernameDetails),
   roleId: (schema) => schema.openapi(roleIdDetails),
+  password: (schema) => schema.openapi(passwordDetails),
 }).omit({
   id: true,
   createdAt: true,

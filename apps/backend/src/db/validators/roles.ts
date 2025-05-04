@@ -31,23 +31,14 @@ const updatedAtDetails = {
 };
 
 export const selectRoleSchema = createSelectSchema(roleTable, {
-  id: (schema) => schema.openapi(idDetails),
-  name: (schema) => schema.openapi(nameDetails),
-  description: (schema) => schema.openapi(descriptionDetails),
-  createdAt: (schema) => schema.openapi(createdAtDetails),
-  updatedAt: (schema) => schema.openapi(updatedAtDetails),
 });
 export const insertRoleSchema = createInsertSchema(roleTable, {
-  name: (schema) => schema.openapi(nameDetails),
-  description: (schema) => schema.openapi(descriptionDetails),
 }).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
 });
 export const updateRoleSchema = createUpdateSchema(roleTable, {
-  name: (schema) => schema.openapi(nameDetails),
-  description: (schema) => schema.openapi(descriptionDetails),
 }).omit({
   id: true,
   createdAt: true,

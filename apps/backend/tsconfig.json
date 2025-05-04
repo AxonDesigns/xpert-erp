@@ -17,8 +17,5 @@
         "../../packages/env/src/*"
       ]
     }
-  },
-  "include": [
-    "."
-  ]
+  }
 }

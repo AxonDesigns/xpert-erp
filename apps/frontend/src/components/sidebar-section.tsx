@@ -5,41 +5,41 @@ import { type ComponentProps, createContext, type ReactNode, useContext, useEffe
 import { motion } from "motion/react";
 import { cn } from "@frontend/lib/utils";
 
-type SidebarSectionContextType = {
+type SectionContextType = {
   open: boolean,
   setOpen: (open: boolean) => void,
   startOpen?: boolean,
 }
 
-const SidebarSectionContext = createContext<SidebarSectionContextType>({
+const SectionContext = createContext<SectionContextType>({
   open: false,
   setOpen: () => { },
   startOpen: false,
 })
 
-function useSidebarSection() {
-  const context = useContext(SidebarSectionContext);
+function useSection() {
+  const context = useContext(SectionContext);
   if (!context) {
     throw new Error("useSidebarSection must be used within a SidebarSectionContextProvider");
   }
   return context;
 }
 
-export function SidebarSection({ children, startOpen = false }: { children: ReactNode, startOpen?: boolean }) {
+export function Section({ children, startOpen = false }: { children: ReactNode, startOpen?: boolean }) {
   const [open, setOpen] = useState(startOpen);
 
   return (
-    <SidebarSectionContext.Provider value={{ open, setOpen, startOpen }}>
+    <SectionContext.Provider value={{ open, setOpen, startOpen }}>
       <div className="flex flex-col gap-1">
         {children}
         <div className="h-px bg-foreground/10" />
       </div>
-    </SidebarSectionContext.Provider>
+    </SectionContext.Provider>
   )
 }
 
-export const SidebarSectionTrigger = ({ asChild, children, className, ...props }: ComponentProps<"button"> & { asChild?: boolean }) => {
-  const { open, setOpen } = useSidebarSection();
+export const SectionTrigger = ({ asChild, children, className, ...props }: ComponentProps<"button"> & { asChild?: boolean }) => {
+  const { open, setOpen } = useSection();
 
   const Comp = asChild ? Slot : Button;
 
@@ -56,8 +56,8 @@ export const SidebarSectionTrigger = ({ asChild, children, className, ...props }
   )
 }
 
-export const SidebarSectionContent = ({ children }: { children: ReactNode }) => {
-  const { open } = useSidebarSection();
+export const SectionContent = ({ children }: { children: ReactNode }) => {
+  const { open } = useSection();
 
   // Used to prevent the animation from starting before options report they are selected on mount
   const [mounted, setMounted] = useState(false);
@@ -71,7 +71,7 @@ export const SidebarSectionContent = ({ children }: { children: ReactNode }) => 
       animate={{
         opacity: open ? 1 : 0,
         height: open ? "auto" : 0,
-        filter: open ? "blur(0)" : "blur(5px)",
+        filter: open ? "blur(0)" : "blur(3px)",
       }}
       transition={{
         type: "tween",
@@ -86,9 +86,9 @@ export const SidebarSectionContent = ({ children }: { children: ReactNode }) => 
   )
 }
 
-export const SidebarSectionOption = ({ asChild, selected, className, ...props }: ComponentProps<"button"> & { asChild?: boolean, selected?: boolean }) => {
+export const SectionOption = ({ asChild, selected, className, ...props }: ComponentProps<"button"> & { asChild?: boolean, selected?: boolean }) => {
   const Comp = asChild ? Slot : Button;
-  const { setOpen } = useSidebarSection();
+  const { setOpen } = useSection();
 
   // Open section when option is selected
   useEffect(() => {
@@ -101,8 +101,9 @@ export const SidebarSectionOption = ({ asChild, selected, className, ...props }:
     <Comp
       className={cn(
         'group text-sm justify-start bg-white/0 ',
-        'text-foreground hover:bg-foreground/10',
-        "data-[state=selected]:bg-foreground/20 data-[state=selected]:text-foreground data-[state=selected]:hover:bg-foreground/30",
+        'text-foreground hover:bg-foreground/10 shadow-none',
+        "data-[state=selected]:bg-foreground data-[state=selected]:text-background data-[state=selected]:hover:bg-foreground/90",
+        "data-[state=selected]:shadow-md",
         className
       )}
       data-state={selected ? "selected" : "unselected"}

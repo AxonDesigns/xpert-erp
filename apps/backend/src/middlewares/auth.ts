@@ -2,7 +2,7 @@ import type { PublicUser } from "@backend/db/types/users";
 import type { AppBindings } from "@backend/lib/types";
 import { env } from "@env/backend";
 import type { Context, Env } from "hono";
-import { getCookie, getSignedCookie } from "hono/cookie";
+import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import { verify } from "hono/jwt";
 import * as HttpStatusCodes from "stoker/http-status-codes";
@@ -15,10 +15,9 @@ const getTokenFromHeader = <T extends Env>(c: Context<T>) => {
   return split[1];
 };
 
-const getTokenFromCookie = async <T extends Env>(c: Context<T>) => {
-  const token = await getSignedCookie(
+const getTokenFromCookie = <T extends Env>(c: Context<T>) => {
+  const token = getCookie(
     c,
-    env.ACCESS_TOKEN_COOKIE_SECRET,
     "access_token",
   );
   return token;
@@ -26,6 +25,7 @@ const getTokenFromCookie = async <T extends Env>(c: Context<T>) => {
 
 const publicRoutes = [
   "/api/auth/login",
+  "/api/auth/logout",
 ];
 
 const auth = createMiddleware<AppBindings>(async (c, next) => {
@@ -37,7 +37,7 @@ const auth = createMiddleware<AppBindings>(async (c, next) => {
     return next();
   }
 
-  const token = getTokenFromHeader(c) || (await getTokenFromCookie(c));
+  const token = getTokenFromHeader(c) || getTokenFromCookie(c);
 
   if (token) {
     //const processed = token.split(".").slice(0, 2).join(".");
@@ -45,7 +45,8 @@ const auth = createMiddleware<AppBindings>(async (c, next) => {
       const { user } = await verify(token, env.ACCESS_TOKEN_SECRET, "HS256");
       c.set("user", user as PublicUser);
       return next();
-    } catch (error) { }
+    } catch (error) {
+    }
   }
 
   return c.json(

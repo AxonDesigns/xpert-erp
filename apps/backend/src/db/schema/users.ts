@@ -1,6 +1,6 @@
 import { pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { id, timestamps } from "@backend/db/lib/utils";
-import roleTable from "@backend/db/schema/roles";
+import { id, timestamps } from "../lib/utils";
+import roleTable from "../schema/roles";
 
 const userTable = pgTable("users", {
   id: id("id").primaryKey(),
