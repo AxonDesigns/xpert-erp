@@ -16,9 +16,7 @@ const App = () => {
   const auth = useAuth();
 
   if (auth.isLoading) {
-    return <div className='flex h-dvh items-center justify-center'>
-      <h1>Loading...</h1>
-    </div>;
+    return null;
   }
 
   return (

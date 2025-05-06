@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@front
 import { useTheme } from '@frontend/hooks/theme';
 import { useAuth } from '@frontend/hooks/useAuth';
 import { cn } from '@frontend/lib/utils';
-import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, redirect, useRouter } from '@tanstack/react-router'
 import { Activity, ChartPie, Home, LayoutPanelLeft, LogOut, Moon, Sun, SunMoon, Users } from 'lucide-react';
 
 export const Route = createFileRoute('/_protected')({
@@ -46,7 +46,7 @@ function RouteComponent() {
               </div>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className=''>
+          <PopoverContent className='popover-trigger-width'>
             Hola
           </PopoverContent>
         </Popover>
@@ -57,13 +57,17 @@ function RouteComponent() {
             <span>Administration</span>
           </SectionTrigger>
           <SectionContent>
-            <SectionOption selected>
-              <LayoutPanelLeft />
-              <span>Dashboard</span>
+            <SectionOption asChild>
+              <Link to='/'>
+                <LayoutPanelLeft />
+                <span>Dashboard</span>
+              </Link>
             </SectionOption>
-            <SectionOption >
-              <Activity />
-              <span>Activity</span>
+            <SectionOption asChild>
+              <Link to='/activity'>
+                <Activity />
+                <span>Activity</span>
+              </Link>
             </SectionOption>
           </SectionContent>
         </Section>

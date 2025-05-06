@@ -15,6 +15,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as AboutImport } from './routes/about'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
+import { Route as ProtectedActivityImport } from './routes/_protected/activity'
 
 // Create/Update Routes
 
@@ -38,6 +39,12 @@ const ProtectedRoute = ProtectedImport.update({
 const ProtectedIndexRoute = ProtectedIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedActivityRoute = ProtectedActivityImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -66,6 +73,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/_protected/activity': {
+      id: '/_protected/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ProtectedActivityImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_protected/': {
       id: '/_protected/'
       path: '/'
@@ -79,10 +93,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface ProtectedRouteChildren {
+  ProtectedActivityRoute: typeof ProtectedActivityRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedActivityRoute: ProtectedActivityRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
 }
 
@@ -94,12 +110,14 @@ export interface FileRoutesByFullPath {
   '': typeof ProtectedRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/activity': typeof ProtectedActivityRoute
   '/': typeof ProtectedIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/activity': typeof ProtectedActivityRoute
   '/': typeof ProtectedIndexRoute
 }
 
@@ -108,15 +126,22 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/_protected/activity': typeof ProtectedActivityRoute
   '/_protected/': typeof ProtectedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/about' | '/login' | '/'
+  fullPaths: '' | '/about' | '/login' | '/activity' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/login' | '/'
-  id: '__root__' | '/_protected' | '/about' | '/login' | '/_protected/'
+  to: '/about' | '/login' | '/activity' | '/'
+  id:
+    | '__root__'
+    | '/_protected'
+    | '/about'
+    | '/login'
+    | '/_protected/activity'
+    | '/_protected/'
   fileRoutesById: FileRoutesById
 }
 
@@ -150,6 +175,7 @@ export const routeTree = rootRoute
     "/_protected": {
       "filePath": "_protected.tsx",
       "children": [
+        "/_protected/activity",
         "/_protected/"
       ]
     },
@@ -158,6 +184,10 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_protected/activity": {
+      "filePath": "_protected/activity.tsx",
+      "parent": "/_protected"
     },
     "/_protected/": {
       "filePath": "_protected/index.tsx",

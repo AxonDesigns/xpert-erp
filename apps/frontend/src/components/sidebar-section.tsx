@@ -1,7 +1,7 @@
 import { Button } from "@frontend/components/ui/button";
 import { Slot } from "@radix-ui/react-slot";
 import { ChevronDown } from "lucide-react";
-import { type ComponentProps, createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { type ComponentProps, createContext, type ReactNode, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@frontend/lib/utils";
 
@@ -86,27 +86,32 @@ export const SectionContent = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const SectionOption = ({ asChild, selected, className, ...props }: ComponentProps<"button"> & { asChild?: boolean, selected?: boolean }) => {
+export const SectionOption = ({ asChild, selected, className, ref: refProp, ...props }: ComponentProps<"button"> & { asChild?: boolean, selected?: boolean }) => {
   const Comp = asChild ? Slot : Button;
+  const ref = useRef<HTMLButtonElement>(null);
+  useImperativeHandle(refProp, () => ref.current as HTMLButtonElement);
   const { setOpen } = useSection();
 
   // Open section when option is selected
   useEffect(() => {
-    if (selected) {
+    if ((ref.current && ref.current.getAttribute("data-status") === "active") || selected) {
       setOpen(true);
     }
-  }, [selected, setOpen]);
+  }, [setOpen, selected]);
 
   return (
     <Comp
       className={cn(
+        "flex gap-2 items-center p-2 text-sm [&_svg:not([class*='size-'])]:size-4",
         'group text-sm justify-start bg-white/0 ',
         'text-foreground hover:bg-foreground/10 shadow-none',
-        "data-[state=selected]:bg-foreground data-[state=selected]:text-background data-[state=selected]:hover:bg-foreground/90",
-        "data-[state=selected]:shadow-md",
+        "data-[status=active]:bg-foreground data-[status=active]:text-background data-[status=active]:hover:bg-foreground/90",
+        "data-[status=active]:shadow-md",
+        "rounded-md transition-colors duration-100 hover:duration-0",
         className
       )}
-      data-state={selected ? "selected" : "unselected"}
+      //data-state={selected ? "selected" : "unselected"}
+      ref={ref}
       {...props}
     />
   )
