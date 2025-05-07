@@ -86,7 +86,16 @@ export const SectionContent = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const SectionOption = ({ asChild, selected, className, ref: refProp, ...props }: ComponentProps<"button"> & { asChild?: boolean, selected?: boolean }) => {
+export const SectionOption = ({
+  asChild,
+  selected,
+  className,
+  ref: refProp,
+  ...props
+}: ComponentProps<"button"> & {
+  asChild?: boolean,
+  selected?: boolean
+}) => {
   const Comp = asChild ? Slot : Button;
   const ref = useRef<HTMLButtonElement>(null);
   useImperativeHandle(refProp, () => ref.current as HTMLButtonElement);
