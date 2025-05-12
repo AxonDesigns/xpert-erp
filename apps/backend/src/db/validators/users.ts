@@ -55,7 +55,6 @@ export const insertUserSchema = createInsertSchema(userTable, {
       .openapi(passwordDetails),
   roleId: (schema) => schema.openapi(roleIdDetails),
 }).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
   otpSecret: true,
@@ -81,7 +80,6 @@ export const updateUserSchema = createUpdateSchema(userTable, {
   roleId: (schema) => schema.openapi(roleIdDetails),
   password: (schema) => schema.openapi(passwordDetails),
 }).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
   otpSecret: true,

@@ -1,3 +1,4 @@
+import 'zod-openapi/extend';
 import sessionTable from "@backend/db/schema/sessions";
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
 

@@ -1,3 +1,4 @@
+import 'zod-openapi/extend';
 import roleToPermissionTable from "@backend/db/schema/roles-to-permissions";
 import {
   createInsertSchema,

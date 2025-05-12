@@ -1,3 +1,4 @@
+import 'zod-openapi/extend';
 import roleTable from "@backend/db/schema/roles";
 import {
   createInsertSchema,
@@ -32,15 +33,14 @@ const updatedAtDetails = {
 
 export const selectRoleSchema = createSelectSchema(roleTable, {
 });
+
 export const insertRoleSchema = createInsertSchema(roleTable, {
 }).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
 });
 export const updateRoleSchema = createUpdateSchema(roleTable, {
 }).omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
 });

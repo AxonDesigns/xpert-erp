@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { serial, timestamp } from "drizzle-orm/pg-core";
+import { integer, serial, timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
   updatedAt: timestamp("updated_at", {
@@ -17,4 +17,4 @@ export const timestamps = {
     .notNull(),
 };
 
-export const id = (name = "id") => serial(name);
+export const id = (name = "id") => integer(name);

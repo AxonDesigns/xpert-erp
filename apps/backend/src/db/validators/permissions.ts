@@ -1,3 +1,4 @@
+import 'zod-openapi/extend';
 import permissionTable from "@backend/db/schema/permissions";
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
 
