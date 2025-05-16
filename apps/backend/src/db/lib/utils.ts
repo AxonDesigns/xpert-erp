@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, serial, timestamp } from "drizzle-orm/pg-core";
+import { integer, timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
   updatedAt: timestamp("updated_at", {
