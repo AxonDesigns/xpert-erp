@@ -32,7 +32,7 @@ function RouteComponent() {
       <div className='m-2'>
         <Popover>
           <PopoverTrigger className='flex gap-2 items-center w-full p-2 rounded-sm h-auto' asChild>
-            <Button variant="ghost">
+            <Button className='bg-foreground/5 hover:bg-foreground/10' variant="none">
               <picture>
                 <img
                   src='avatar.png'
