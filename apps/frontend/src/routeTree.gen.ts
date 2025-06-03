@@ -15,6 +15,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as AboutImport } from './routes/about'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
+import { Route as ProtectedRolesImport } from './routes/_protected/roles'
 import { Route as ProtectedActivityImport } from './routes/_protected/activity'
 
 // Create/Update Routes
@@ -39,6 +40,12 @@ const ProtectedRoute = ProtectedImport.update({
 const ProtectedIndexRoute = ProtectedIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedRolesRoute = ProtectedRolesImport.update({
+  id: '/roles',
+  path: '/roles',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -80,6 +87,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedActivityImport
       parentRoute: typeof ProtectedImport
     }
+    '/_protected/roles': {
+      id: '/_protected/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof ProtectedRolesImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_protected/': {
       id: '/_protected/'
       path: '/'
@@ -94,11 +108,13 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedRouteChildren {
   ProtectedActivityRoute: typeof ProtectedActivityRoute
+  ProtectedRolesRoute: typeof ProtectedRolesRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedActivityRoute: ProtectedActivityRoute,
+  ProtectedRolesRoute: ProtectedRolesRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
 }
 
@@ -111,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/activity': typeof ProtectedActivityRoute
+  '/roles': typeof ProtectedRolesRoute
   '/': typeof ProtectedIndexRoute
 }
 
@@ -118,6 +135,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/activity': typeof ProtectedActivityRoute
+  '/roles': typeof ProtectedRolesRoute
   '/': typeof ProtectedIndexRoute
 }
 
@@ -127,20 +145,22 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/_protected/activity': typeof ProtectedActivityRoute
+  '/_protected/roles': typeof ProtectedRolesRoute
   '/_protected/': typeof ProtectedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/about' | '/login' | '/activity' | '/'
+  fullPaths: '' | '/about' | '/login' | '/activity' | '/roles' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/login' | '/activity' | '/'
+  to: '/about' | '/login' | '/activity' | '/roles' | '/'
   id:
     | '__root__'
     | '/_protected'
     | '/about'
     | '/login'
     | '/_protected/activity'
+    | '/_protected/roles'
     | '/_protected/'
   fileRoutesById: FileRoutesById
 }
@@ -176,6 +196,7 @@ export const routeTree = rootRoute
       "filePath": "_protected.tsx",
       "children": [
         "/_protected/activity",
+        "/_protected/roles",
         "/_protected/"
       ]
     },
@@ -187,6 +208,10 @@ export const routeTree = rootRoute
     },
     "/_protected/activity": {
       "filePath": "_protected/activity.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/roles": {
+      "filePath": "_protected/roles.tsx",
       "parent": "/_protected"
     },
     "/_protected/": {

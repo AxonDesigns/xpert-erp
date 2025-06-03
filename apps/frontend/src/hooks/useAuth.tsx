@@ -8,7 +8,7 @@ type AuthContextType = {
   isLoading: boolean,
   user: PublicUser | null,
   setUser: (user: PublicUser | null) => void,
-  login: (email: string, password: string) => Promise<void>,
+  login: (email: string, password: string) => Promise<string | undefined>,
   logout: () => Promise<void>,
 }
 
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: false,
   user: null,
   setUser: () => { },
-  login: async () => { },
+  login: async () => undefined,
   logout: async () => { },
 })
 
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     init();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<string | undefined> => {
     const res = await api.auth.login.$post({
       json: {
         email,
@@ -80,8 +80,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       return;
     }
-
     setUser(null);
+    if(res.status === 404){
+      const error = await res.json();
+      return error.message;
+    }
+    
+    if (res.status === 422) {
+      const error = await res.json();
+      return error.error.issues.join(", ");
+    }
+
+    return "Unknown error"
   }
 
   const logout = async () => {

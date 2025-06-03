@@ -2,6 +2,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 
 import { routeTree } from './routeTree.gen'
 import { useAuth } from '@frontend/hooks/useAuth'
+import { Toaster } from './components/ui/sonner'
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const router = createRouter({ routeTree, context: { auth: undefined! } })
@@ -20,9 +21,12 @@ const App = () => {
   }
 
   return (
+    <>
     <RouterProvider router={router} context={{
       auth,
     }} />
+    <Toaster />
+    </>
   )
 }
 

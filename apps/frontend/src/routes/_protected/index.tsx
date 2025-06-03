@@ -2,9 +2,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { createFileRoute } from '@tanstack/react-router'
 import { useRef, useState } from 'react';
 import { Button } from '@frontend/components/ui/button';
-/* import { useGSAP } from '@gsap/react';
+/*
+import { useGSAP } from '@gsap/react';
 import { Flip } from 'gsap/Flip';
-import gsap from 'gsap'; */
+import gsap from 'gsap';
+*/
 
 export const Route = createFileRoute('/_protected/')({
   component: RouteComponent,
@@ -15,7 +17,8 @@ function RouteComponent() {
 
   const [open, setOpen] = useState(false);
 
-  /*useGSAP(() => {
+  /*
+  useGSAP(() => {
     setTimeout(() => {
       Flip.fit(".dialog-content", ".button");
       const state = Flip.getState(".dialog-content");
@@ -31,7 +34,8 @@ function RouteComponent() {
   }, {
     dependencies: [open],
     scope: containerRef
-  }) */
+  })
+  */
 
   return (
     <>

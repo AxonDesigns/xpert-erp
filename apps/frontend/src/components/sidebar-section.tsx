@@ -1,31 +1,45 @@
 import { Button } from "@frontend/components/ui/button";
 import { Slot } from "@radix-ui/react-slot";
 import { ChevronDown } from "lucide-react";
-import { type ComponentProps, createContext, type ReactNode, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+  type ComponentProps,
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { motion } from "motion/react";
 import { cn } from "@frontend/lib/utils";
 
 type SectionContextType = {
-  open: boolean,
-  setOpen: (open: boolean) => void,
-  startOpen?: boolean,
-}
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  startOpen?: boolean;
+};
 
 const SectionContext = createContext<SectionContextType>({
   open: false,
-  setOpen: () => { },
+  setOpen: () => {},
   startOpen: false,
-})
+});
 
 function useSection() {
   const context = useContext(SectionContext);
   if (!context) {
-    throw new Error("useSidebarSection must be used within a SidebarSectionContextProvider");
+    throw new Error(
+      "useSidebarSection must be used within a SidebarSectionContextProvider",
+    );
   }
   return context;
 }
 
-export function Section({ children, startOpen = false }: { children: ReactNode, startOpen?: boolean }) {
+export function Section({
+  children,
+  startOpen = false,
+}: { children: ReactNode; startOpen?: boolean }) {
   const [open, setOpen] = useState(startOpen);
 
   return (
@@ -35,26 +49,36 @@ export function Section({ children, startOpen = false }: { children: ReactNode, 
         <div className="h-px bg-foreground/10" />
       </div>
     </SectionContext.Provider>
-  )
+  );
 }
 
-export const SectionTrigger = ({ asChild, children, className, ...props }: ComponentProps<"button"> & { asChild?: boolean }) => {
+export const SectionTrigger = ({
+  asChild,
+  children,
+  className,
+  ...props
+}: ComponentProps<"button"> & { asChild?: boolean }) => {
   const { open, setOpen } = useSection();
 
   const Comp = asChild ? Slot : Button;
 
   return (
     <Comp
-      className={cn('justify-start text-xs', className)}
+      className={cn(
+        "justify-start text-xs outline-0 focus-visible:ring-0 focus-visible:inset-ring-2",
+        className,
+      )}
       variant="text"
       onClick={() => setOpen(!open)}
       {...props}
     >
-      <ChevronDown className={`${open ? "rotate-180" : ""} transition-transform duration-[0.3s] ease-[cubic-bezier(0.4, 0, 0.2, 1)]`} />
+      <ChevronDown
+        className={`${open ? "rotate-180" : ""} transition-transform duration-[0.3s] ease-[cubic-bezier(0.4, 0, 0.2, 1)]`}
+      />
       {children}
     </Comp>
-  )
-}
+  );
+};
 
 export const SectionContent = ({ children }: { children: ReactNode }) => {
   const { open } = useSection();
@@ -72,6 +96,7 @@ export const SectionContent = ({ children }: { children: ReactNode }) => {
         opacity: open ? 1 : 0,
         height: open ? "auto" : 0,
         filter: open ? "blur(0)" : "blur(3px)",
+        scale: open ? 1 : 0.9,
       }}
       transition={{
         type: "tween",
@@ -79,12 +104,12 @@ export const SectionContent = ({ children }: { children: ReactNode }) => {
         duration: mounted ? 0.3 : 0,
       }}
       data-state={open ? "open" : "closed"}
-      className='flex flex-col gap-1 overflow-hidden'
+      className="flex flex-col gap-1 data-[state=closed]:pointer-events-none overflow-hidden"
     >
       {children}
     </motion.div>
-  )
-}
+  );
+};
 
 export const SectionOption = ({
   asChild,
@@ -93,8 +118,8 @@ export const SectionOption = ({
   ref: refProp,
   ...props
 }: ComponentProps<"button"> & {
-  asChild?: boolean,
-  selected?: boolean
+  asChild?: boolean;
+  selected?: boolean;
 }) => {
   const Comp = asChild ? Slot : Button;
   const ref = useRef<HTMLButtonElement>(null);
@@ -103,7 +128,10 @@ export const SectionOption = ({
 
   // Open section when option is selected
   useEffect(() => {
-    if ((ref.current && ref.current.getAttribute("data-status") === "active") || selected) {
+    if (
+      (ref.current && ref.current.getAttribute("data-status") === "active") ||
+      selected
+    ) {
       setOpen(true);
     }
   }, [setOpen, selected]);
@@ -112,16 +140,17 @@ export const SectionOption = ({
     <Comp
       className={cn(
         "flex gap-2 items-center p-2 text-sm [&_svg:not([class*='size-'])]:size-4",
-        'group text-sm justify-start bg-white/0 ',
-        'text-foreground hover:bg-foreground/10 shadow-none',
+        "group text-sm justify-start bg-white/0 ",
+        "text-foreground hover:bg-foreground/10 shadow-none",
         "data-[status=active]:bg-foreground data-[status=active]:text-background data-[status=active]:hover:bg-foreground/90",
         "data-[status=active]:shadow-md",
+        "outline-0 focus-visible:ring-0 focus-visible:inset-ring-2 inset-ring-muted-foreground",
         "rounded-md transition-colors duration-100 hover:duration-0",
-        className
+        className,
       )}
       //data-state={selected ? "selected" : "unselected"}
       ref={ref}
       {...props}
     />
-  )
-}
+  );
+};

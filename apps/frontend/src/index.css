@@ -44,6 +44,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-page-in: page-in 0.8s cubic-bezier(0, 1.0, 0.3, 1.0);
+  --font-supreme: "Supreme", sans-serif;
 
   @keyframes page-in {
     0% {
@@ -143,7 +144,7 @@
     scrollbar-color: var(--foreground) var(--background);
   }
   body {
-    @apply bg-background text-foreground overflow-hidden h-dvh;
+    @apply bg-background text-foreground overflow-hidden h-dvh font-supreme;
   }
 
   .popover-trigger-width {
@@ -156,8 +157,9 @@
   input:-webkit-autofill:active{
     -webkit-background-clip: text;
     -webkit-text-fill-color: var(--foreground);
-    transition: background-color 5000s ease-in-out 0s;
-    transition-property: background-color, color;
+    caret-color: var(--foreground);
+    transition: background-color 5000s ease-in-o ut 0s;
+    transition-property: background-color, color, caret-color;
     box-shadow: inset 0 0 20px 20px var(--input / 0.3);
   }
 
