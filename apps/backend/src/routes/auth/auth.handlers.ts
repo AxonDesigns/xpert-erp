@@ -1,6 +1,5 @@
 import db from "@backend/db";
 import userTable from "@backend/db/schema/users";
-import type { PublicUser } from "@backend/db/types/users";
 import { userPublicColumns } from "@backend/db/validators/users";
 import type { AppRouteHandler } from "@backend/lib/types";
 import type {

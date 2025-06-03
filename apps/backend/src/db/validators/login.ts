@@ -1,10 +1,7 @@
-import 'zod-openapi/extend';
+import "zod-openapi/extend";
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .email(),
-  password: z
-    .string(),
+  email: z.string().min(1, "Email is required").email(),
+  password: z.string().min(1, "Password is required"),
 });
