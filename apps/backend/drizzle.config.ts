@@ -1,3 +1,4 @@
+import 'src/pollyfill/compression-stream'
 import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
 import { env } from '@repo/env/backend';
