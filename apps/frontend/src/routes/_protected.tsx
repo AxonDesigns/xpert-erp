@@ -1,3 +1,4 @@
+import ErrorBoundary from "@frontend/components/error-boundary";
 import {
   Section,
   SectionContent,
@@ -274,7 +275,9 @@ function RouteComponent() {
         data-state={isOpen}
         className="grid grid-cols-1 flex-1 data-[state=true]:ml-[250px] transition-all duration-300"
       >
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </div>
     </div>
   );

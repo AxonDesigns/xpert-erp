@@ -1,21 +1,158 @@
+import type { SelectRole } from "@backend/db/types/roles";
+import { Button, type buttonVariants } from "@frontend/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@frontend/components/ui/popover";
+import { Separator } from "@frontend/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@frontend/components/ui/table";
+import { columns } from "@frontend/data-tables/roles";
 import { getRoles } from "@frontend/domain/roles";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import type { VariantProps } from "class-variance-authority";
+import { type LucideIcon, MoreVertical, Pencil, Trash } from "lucide-react";
 
 export const Route = createFileRoute("/_protected/roles")({
   component: RouteComponent,
 });
 
+const options: {
+  icon: LucideIcon;
+  label: string;
+  variant: VariantProps<typeof buttonVariants>["variant"];
+  action: (data: SelectRole) => void;
+}[] = [
+  {
+    icon: Pencil,
+    label: "Edit",
+    variant: "ghost",
+    action: (data) => {
+      console.log(data);
+    },
+  },
+  {
+    icon: Trash,
+    label: "Delete",
+    variant: "destructive",
+    action: (data) => {
+      console.log(data);
+    },
+  },
+];
+
 function RouteComponent() {
-  useEffect(() => {
-    getRoles().then((data) => {
-      console.log(data.data);
-    });
-  }, []);
+  const { data } = useQuery({ queryKey: ["roles"], queryFn: getRoles });
+
+  const table = useReactTable({
+    columns,
+    data: data?.data || [],
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <main className="flex justify-center items-center bg-surface-1 animate-page-in flex-1 rounded-lg">
-      <h1>HOLA</h1>
+      <div className="overflow-hidden border border-input rounded-xl">
+        <Table>
+          <TableHeader className="bg-foreground/5">
+            {table.getHeaderGroups().map((group) => (
+              <TableRow key={group.id}>
+                {group.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+                <TableHead className="text-center">
+                  <span>Actions</span>
+                </TableHead>
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                onClick={() => console.log("ROW", row.original)}
+                className="cursor-pointer"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+                <TableCell className="text-center mx-4">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <MoreVertical />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="p-0 min-w-[200px] grid grid-cols-1 overflow-hidden"
+                      side="right"
+                      align="center"
+                      asChild
+                    >
+                      <ul>
+                        <h2 className="py-2 px-4 text-xs">Actions</h2>
+                        <Separator />
+                        {options.map(
+                          ({ icon: Icon, label, variant, action }, index) => {
+                            return (
+                              <PopoverClose
+                                // biome-ignore lint/suspicious/noArrayIndexKey:
+                                key={index}
+                                asChild
+                              >
+                                <Button
+                                  variant={variant}
+                                  className="rounded-none justify-start"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    action(row.original);
+                                  }}
+                                >
+                                  <Icon />
+                                  {label}
+                                </Button>
+                              </PopoverClose>
+                            );
+                          },
+                        )}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </main>
   );
 }
