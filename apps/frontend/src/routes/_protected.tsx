@@ -40,7 +40,7 @@ import {
   SunMoon,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ context }) => {
@@ -56,6 +56,11 @@ function RouteComponent() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This is a workaround for the router invalidation
+  useEffect(() => {
+    router.invalidate();
+  }, [user]);
 
   return (
     <div className="flex p-2 gap-2 h-dvh overflow-hidden animate-page-in">

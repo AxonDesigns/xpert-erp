@@ -1,22 +1,22 @@
 import { api } from "@frontend/lib/api";
 import type { SelectRole } from "@repo/backend/types/roles";
 
-export async function getRoles(): Promise<{
-  data: SelectRole[] | null;
-  error: Error | null;
-}> {
-  const res = await api.roles.$get(
-    {},
-    {
-      init: {
-        credentials: "include",
-      },
-    },
+type GetRolesResponse = {
+  status: "success";
+  data: SelectRole[];
+} | {
+  status: "error";
+  error: string;
+};
+
+export async function getRoles(): Promise<GetRolesResponse> {
+  const res = await api.roles.$get({},
+    { init: { credentials: "include", }, },
   );
   if (res.status !== 200) {
     return {
-      data: null,
-      error: new Error(""),
+      status: "error",
+      error: "Error: Failed to fetch roles",
     };
   }
 
@@ -32,7 +32,7 @@ export async function getRoles(): Promise<{
   );
 
   return {
+    status: "success",
     data: roles,
-    error: null,
   };
 }

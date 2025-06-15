@@ -2,6 +2,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { createFileRoute } from '@tanstack/react-router'
 import { useRef, useState } from 'react';
 import { Button } from '@frontend/components/ui/button';
+import { Input } from '@frontend/components/ui/input';
 /*
 import { useGSAP } from '@gsap/react';
 import { Flip } from 'gsap/Flip';

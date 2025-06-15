@@ -26,6 +26,7 @@ import {
 } from "@tanstack/react-table";
 import type { VariantProps } from "class-variance-authority";
 import { type LucideIcon, MoreVertical, Pencil, Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_protected/roles")({
   component: RouteComponent,
@@ -37,37 +38,39 @@ const options: {
   variant: VariantProps<typeof buttonVariants>["variant"];
   action: (data: SelectRole) => void;
 }[] = [
-  {
-    icon: Pencil,
-    label: "Edit",
-    variant: "ghost",
-    action: (data) => {
-      console.log(data);
+    {
+      icon: Pencil,
+      label: "Edit",
+      variant: "ghost",
+      action: (data) => {
+        console.log(data);
+      },
     },
-  },
-  {
-    icon: Trash,
-    label: "Delete",
-    variant: "destructive",
-    action: (data) => {
-      console.log(data);
+    {
+      icon: Trash,
+      label: "Delete",
+      variant: "destructive",
+      action: (data) => {
+        console.log(data);
+      },
     },
-  },
-];
+  ];
 
 function RouteComponent() {
   const { data } = useQuery({ queryKey: ["roles"], queryFn: getRoles });
 
   const table = useReactTable({
     columns,
-    data: data?.data || [],
+    data: data?.status === "success" ? data.data : [],
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <main className="flex justify-center items-center bg-surface-1 animate-page-in flex-1 rounded-lg">
-      <div className="overflow-hidden border border-input rounded-xl">
-        <Table>
+    <main className="flex flex-col bg-surface-1 animate-page-in flex-1 rounded-lg p-2 pt-8 gap-2">
+      <h1 className="text-4xl font-bold ml-4">Roles</h1>
+      <h2 className="ml-4">Manage your roles</h2>
+      <div className="flex-1 overflow-hidden border border-input rounded-xl rounded-b-md mt-6">
+        <Table className="border-b border-input">
           <TableHeader className="bg-foreground/5">
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
@@ -76,9 +79,9 @@ function RouteComponent() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 ))}
                 <TableHead className="text-center">
@@ -91,8 +94,10 @@ function RouteComponent() {
             {table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                onClick={() => console.log("ROW", row.original)}
-                className="cursor-pointer"
+                onClick={() => {
+                  toast.success(`Role ${row.original.name} has been selected`);
+                }}
+                className="cursor-pointer hover:duration-0"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

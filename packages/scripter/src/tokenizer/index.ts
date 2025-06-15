@@ -1,5 +1,5 @@
 import { spec } from "./spec";
-import type { specType, Token } from "./types";
+import type { SpecType, Token } from "./types";
 //import type {specType, Token } from "./types";
 
 /**
@@ -19,18 +19,12 @@ export default function tokenize(content: string): Token[] {
         if (match) {
           matched = true;
           cursor += match[0].length;
-          if (
-            type === "WHITESPACE"
-            ||
-            type === "COMMENT"
-            ||
-            type === "EOF"
-          ) {
+          if (type === "WHITESPACE" || type === "COMMENT" || type === "EOF") {
             continue;
           }
           tokens.push({
-            type: type as specType,
-            value: match[0]
+            type: type as SpecType,
+            value: match[0],
           });
           break;
         }
@@ -47,9 +41,9 @@ export default function tokenize(content: string): Token[] {
   if (tokens[tokens.length - 1]?.type !== "EOF") {
     tokens.push({
       type: "EOF",
-      value: "\n"
+      value: "\n",
     });
   }
 
   return tokens;
-} 
+}

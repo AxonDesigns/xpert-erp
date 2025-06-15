@@ -23,37 +23,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<PublicUser | null | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const res = await api.auth.me.$get({}, {
-          init: {
-            credentials: 'include',
-          }
-        });
-        if (res.status === 200) {
-          const data = await res.json();
-          const user = {
-            id: data.id,
-            email: data.email,
-            username: data.username,
-            roleId: data.roleId,
-            createdAt: new Date(data.createdAt),
-            updatedAt: new Date(data.updatedAt),
-          } satisfies PublicUser;
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      } catch (error) { }
-
-      setIsLoading(false);
-    }
-
-    init();
-  }, []);
+  const [isLoading, _setIsLoading] = useState(false);
 
   const login = async (email: string, password: string): Promise<string | undefined> => {
     const res = await api.auth.login.$post({
@@ -81,11 +51,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     setUser(null);
-    if(res.status === 404){
+    if (res.status === 404) {
       const error = await res.json();
       return error.message;
     }
-    
+
     if (res.status === 422) {
       const error = await res.json();
       return error.error.issues.join(", ");

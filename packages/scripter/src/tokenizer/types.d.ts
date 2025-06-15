@@ -49,10 +49,10 @@ const tokenTypes = [
   "RETURN",
 ] as const;
 
-export type TokenType = typeof tokenTypes[number];
+export type TokenType = (typeof tokenTypes)[number];
 
-export type specType = keyof typeof spec;
+export type SpecType = keyof typeof spec;
 export type Token = {
-  type: specType,
-  value: string
+  type: SpecType;
+  value: string;
 };
