@@ -1,7 +1,7 @@
 import type { AuthContext } from "@frontend/hooks/useAuth";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { api } from "@frontend/lib/api";
 import type { PublicUser } from "@repo/backend/types/users";
 import { flushSync } from "react-dom";
@@ -9,6 +9,7 @@ import { Toaster } from "@frontend/components/ui/sonner";
 
 type RouterContext = {
   auth: AuthContext;
+  queryClient: QueryClient;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -38,9 +39,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   },
 });
 
-const queryClient = new QueryClient();
-
 function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />

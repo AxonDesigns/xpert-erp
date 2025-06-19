@@ -21,6 +21,7 @@ import {
 import { useTheme } from "@frontend/hooks/theme";
 import { useAuth } from "@frontend/hooks/useAuth";
 import { cn } from "@frontend/lib/utils";
+import type { FileRouteTypes } from "@frontend/routeTree.gen";
 import {
   createFileRoute,
   Link,
@@ -43,9 +44,15 @@ import {
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/_protected")({
-  beforeLoad: async ({ context }) => {
+  beforeLoad: async ({ context, location }) => {
     if (!context.auth.user) {
-      throw redirect({ to: "/login" });
+      throw redirect({
+        to: "/login",
+        from: location.pathname as FileRouteTypes["to"],
+        search: {
+          goto: location.pathname as FileRouteTypes["to"],
+        }
+      });
     }
   },
   component: RouteComponent,
@@ -63,7 +70,7 @@ function RouteComponent() {
   }, [user]);
 
   return (
-    <div className="flex p-2 gap-2 h-dvh overflow-hidden animate-page-in">
+    <div className="flex p-2 gap-2 h-dvh overflow-hidden">
       <aside
         data-state={isOpen}
         className={cn(

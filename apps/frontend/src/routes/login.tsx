@@ -1,6 +1,6 @@
 import { Button } from "@frontend/components/ui/button";
 import { useAuth } from "@frontend/hooks/useAuth";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { loginSchema } from "@repo/backend/validators/login";
 import type { Login } from "@repo/backend/types/login";
@@ -8,19 +8,38 @@ import { toast } from "sonner";
 import { LabeledInput } from "@frontend/components/labeled-input";
 import { Lock, Mail } from "lucide-react";
 import { getZodFormFieldErrors } from "@frontend/lib/forms";
+import { useEffect } from "react";
+import type { FileRouteTypes } from "@frontend/routeTree.gen";
+
+interface Search {
+  goto: string | undefined;
+}
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
-  beforeLoad: async ({ context }) => {
-    if (context.auth.user) {
-      throw redirect({ to: "/", from: "/login" });
+  validateSearch: (search): Search => {
+    return {
+      goto: search.goto as FileRouteTypes["to"],
     }
-  },
+  }
 });
 
 function RouteComponent() {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
+  const { goto } = Route.useSearch();
   const router = useRouter();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      navigate({
+        to: (goto ?? "/") as FileRouteTypes["to"],
+        replace: true,
+        from: "/login"
+      });
+    }
+  }, [user, goto, navigate]);
+
 
   const form = useForm({
     defaultValues: {

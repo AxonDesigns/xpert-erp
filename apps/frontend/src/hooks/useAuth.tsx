@@ -5,7 +5,6 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 
 type AuthContextType = {
   isAuthenticated: boolean,
-  isLoading: boolean,
   user: PublicUser | null,
   setUser: (user: PublicUser | null) => void,
   login: (email: string, password: string) => Promise<string | undefined>,
@@ -14,7 +13,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  isLoading: false,
   user: null,
   setUser: () => { },
   login: async () => undefined,
@@ -23,7 +21,6 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<PublicUser | null | undefined>(undefined);
-  const [isLoading, _setIsLoading] = useState(false);
 
   const login = async (email: string, password: string): Promise<string | undefined> => {
     const res = await api.auth.login.$post({
@@ -78,7 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider value={{
       isAuthenticated: !!user,
-      isLoading,
       user: user || null,
       setUser,
       login,
