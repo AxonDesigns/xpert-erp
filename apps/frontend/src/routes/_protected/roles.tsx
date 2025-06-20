@@ -1,11 +1,3 @@
-import type { SelectRole } from "@backend/db/types/roles";
-import { Button, type buttonVariants } from "@frontend/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@frontend/components/ui/popover";
-import { Separator } from "@frontend/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -15,67 +7,71 @@ import {
   TableRow,
 } from "@frontend/components/ui/table";
 import { columns } from "@frontend/data-tables/roles";
-import { getRoles } from "@frontend/domain/roles";
-import { PopoverClose } from "@radix-ui/react-popover";
-import { useQuery } from "@tanstack/react-query";
+import { getRoles as getRolesApi } from "@frontend/domain/roles";
+import { cn } from "@frontend/lib/utils";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { VariantProps } from "class-variance-authority";
-import { type LucideIcon, MoreVertical, Pencil, Trash } from "lucide-react";
-import { toast } from "sonner";
+
+async function getRoles() {
+  const reponse = await getRolesApi();
+  if (reponse.status === "success") {
+    return reponse.data;
+  }
+
+  return [];
+}
 
 export const Route = createFileRoute("/_protected/roles")({
   component: RouteComponent,
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.prefetchQuery({
+      queryKey: ["roles"],
+      queryFn: getRoles,
+    })
+  }
 });
 
-const options: {
-  icon: LucideIcon;
-  label: string;
-  variant: VariantProps<typeof buttonVariants>["variant"];
-  action: (data: SelectRole) => void;
-}[] = [
-    {
-      icon: Pencil,
-      label: "Edit",
-      variant: "ghost",
-      action: (data) => {
-        console.log(data);
-      },
-    },
-    {
-      icon: Trash,
-      label: "Delete",
-      variant: "destructive",
-      action: (data) => {
-        console.log(data);
-      },
-    },
-  ];
-
 function RouteComponent() {
-  const { data } = useQuery({ queryKey: ["roles"], queryFn: getRoles });
+  const { data: roles } = useSuspenseQuery({ queryKey: ["roles"], queryFn: getRoles });
 
   const table = useReactTable({
     columns,
-    data: data?.status === "success" ? data.data : [],
+    data: roles,
     getCoreRowModel: getCoreRowModel(),
+    defaultColumn: {
+      minSize: undefined,
+      size: undefined,
+      maxSize: undefined,
+    }
   });
 
   return (
     <main className="flex flex-col bg-surface-1 animate-page-in flex-1 rounded-lg p-2 pt-8 gap-2">
       <h1 className="text-4xl font-bold ml-4">Roles</h1>
       <h2 className="ml-4">Manage your roles</h2>
-      <div className="flex-1 overflow-hidden border border-input rounded-xl rounded-b-md mt-6">
-        <Table className="border-b border-input">
+      <div className="flex flex-col flex-1 overflow-hidden border border-input rounded-xl rounded-b-md mt-6">
+        <Table className="flex-1 border-b border-input">
           <TableHeader className="bg-foreground/5">
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className={cn("", header.column.columnDef.meta?.head?.className)}
+                    onClick={(e) => {
+                      header.column.columnDef.meta?.head?.onClick?.(e, header.getContext());
+                    }}
+                    style={{
+                      minWidth: header.column.columnDef.minSize,
+                      width: header.column.columnDef.size,
+                      maxWidth: header.column.columnDef.maxSize,
+                    }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -84,9 +80,6 @@ function RouteComponent() {
                       )}
                   </TableHead>
                 ))}
-                <TableHead className="text-center">
-                  <span>Actions</span>
-                </TableHead>
               </TableRow>
             ))}
           </TableHeader>
@@ -95,64 +88,26 @@ function RouteComponent() {
               <TableRow
                 key={row.id}
                 onClick={() => {
-                  toast.success(`Role ${row.original.name} has been selected`);
+                  row.toggleSelected();
                 }}
                 className="cursor-pointer hover:duration-0"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={cn("", cell.column.columnDef.meta?.cell?.className)}
+                    onClick={(e) => {
+                      cell.column.columnDef.meta?.cell?.onClick?.(e, cell.getContext());
+                    }}
+                    style={{
+                      minWidth: cell.column.columnDef.minSize || undefined,
+                      width: cell.column.columnDef.size || undefined,
+                      maxWidth: cell.column.columnDef.maxSize || undefined,
+                    }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
-                <TableCell className="text-center mx-4">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      >
-                        <MoreVertical />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="p-0 min-w-[200px] grid grid-cols-1 overflow-hidden"
-                      side="right"
-                      align="center"
-                      asChild
-                    >
-                      <ul>
-                        <h2 className="py-2 px-4 text-xs">Actions</h2>
-                        <Separator />
-                        {options.map(
-                          ({ icon: Icon, label, variant, action }, index) => {
-                            return (
-                              <PopoverClose
-                                // biome-ignore lint/suspicious/noArrayIndexKey:
-                                key={index}
-                                asChild
-                              >
-                                <Button
-                                  variant={variant}
-                                  className="rounded-none justify-start"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    action(row.original);
-                                  }}
-                                >
-                                  <Icon />
-                                  {label}
-                                </Button>
-                              </PopoverClose>
-                            );
-                          },
-                        )}
-                      </ul>
-                    </PopoverContent>
-                  </Popover>
-                </TableCell>
               </TableRow>
             ))}
           </TableBody>

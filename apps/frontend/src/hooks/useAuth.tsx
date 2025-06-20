@@ -1,6 +1,6 @@
 import { api } from '@frontend/lib/api';
 import type { PublicUser } from '@repo/backend/types/users';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
 
 type AuthContextType = {
