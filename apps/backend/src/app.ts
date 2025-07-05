@@ -8,6 +8,8 @@ import auth from "@backend/middlewares/auth";
 import { getConnInfo } from "hono/bun";
 import { cors } from "hono/cors";
 import { env } from "@env/backend";
+import db from "./db";
+import { sql } from "drizzle-orm";
 
 const app = createApp();
 configureOpenAPI(app);
@@ -25,6 +27,11 @@ app.use(
 );
 
 app.use("/api/*", auth);
+
+app.post("/test", async (c) => {
+  await db.execute(sql.raw(`SET app.current_user_id = ${c.var.user?.id}`));
+  return c.json({ ok: true });
+});
 
 for (const route of routes) {
   app.route("/api", route);

@@ -36,6 +36,8 @@ import {
   LayoutPanelLeft,
   LogOut,
   Moon,
+  ShieldHalf,
+  ShieldUser,
   Sidebar,
   Sun,
   SunMoon,
@@ -77,6 +79,7 @@ function RouteComponent() {
           "absolute flex flex-col gap-2 w-[240px] top-2 bottom-2 data-[state=false]:-translate-x-[calc(240px+0.5rem)]",
           "bg-surface-1 rounded-lg",
           "shadow-md shadow-black/15",
+          "not-dark:bg-surface-3",
           "transition-transform duration-300",
         )}
       >
@@ -130,8 +133,14 @@ function RouteComponent() {
               </SectionOption>
               <SectionOption asChild>
                 <Link to="/roles">
-                  <Activity />
+                  <ShieldUser />
                   <span>Roles</span>
+                </Link>
+              </SectionOption>
+              <SectionOption asChild>
+                <Link to="/permissions">
+                  <ShieldHalf />
+                  <span>Permissions</span>
                 </Link>
               </SectionOption>
             </SectionContent>

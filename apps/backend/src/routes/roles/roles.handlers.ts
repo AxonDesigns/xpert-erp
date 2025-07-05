@@ -8,7 +8,17 @@ import type {
   ListRoute,
   UpdateOneRoute,
 } from "@backend/routes/roles/roles.routes";
-import { eq, getTableColumns, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  like,
+  or,
+  sql,
+} from "drizzle-orm";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 
 const publicColumns = () => {
@@ -17,11 +27,39 @@ const publicColumns = () => {
 };
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
+  const { page, limit, sort, filter } = c.req.valid("query");
+  const order = sort
+    .map(({ field, order }) => {
+      const columns = Object.values(getTableColumns(roleTable));
+      const column = columns.find((col) => col.name === field);
+      if (!column) return null;
+
+      return (
+        {
+          asc: asc(column),
+          desc: desc(column),
+        }[order] || null
+      );
+    })
+    .filter((order) => order !== null);
+
+  const filterConditions = filter
+    .map(({ field, filter }) => {
+      const columns = Object.values(getTableColumns(roleTable));
+      const column = columns.find((col) => col.name === field);
+      if (!column) return null;
+
+      return ilike(column, `%${filter}%`);
+    })
+    .filter((filter) => filter !== null);
+
   const userList = await db
     .select(publicColumns())
     .from(roleTable)
-    .limit(10)
-    .offset(0);
+    .limit(limit)
+    .offset(page * limit)
+    .orderBy(...order)
+    .where(or(...filterConditions));
   return c.json(userList, HttpStatusCodes.OK);
 };
 

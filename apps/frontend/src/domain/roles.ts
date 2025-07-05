@@ -1,17 +1,28 @@
 import { api } from "@frontend/lib/api";
 import type { SelectRole } from "@repo/backend/types/roles";
+import type { ToDiscriminatedUnion } from "@repo/utils";
 
-type GetRolesResponse = {
-  status: "success";
-  data: SelectRole[];
-} | {
-  status: "error";
-  error: string;
-};
+type GetRolesResponse = ToDiscriminatedUnion<
+  {
+    success: {
+      data: SelectRole[];
+    };
+    error: {
+      error: string;
+    };
+  },
+  "status"
+>;
 
-export async function getRoles(): Promise<GetRolesResponse> {
-  const res = await api.roles.$get({},
-    { init: { credentials: "include", }, },
+export async function getRoles(query: {
+  sort?: string | undefined;
+  filter?: string | undefined;
+  page?: number | undefined;
+  limit?: number | undefined;
+}): Promise<GetRolesResponse> {
+  const res = await api.roles.$get(
+    { query },
+    { init: { credentials: "include" } },
   );
   if (res.status !== 200) {
     return {

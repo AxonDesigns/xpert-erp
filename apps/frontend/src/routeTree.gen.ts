@@ -16,6 +16,7 @@ import { Route as AboutImport } from './routes/about'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
 import { Route as ProtectedRolesImport } from './routes/_protected/roles'
+import { Route as ProtectedPermissionsImport } from './routes/_protected/permissions'
 import { Route as ProtectedActivityImport } from './routes/_protected/activity'
 
 // Create/Update Routes
@@ -46,6 +47,12 @@ const ProtectedIndexRoute = ProtectedIndexImport.update({
 const ProtectedRolesRoute = ProtectedRolesImport.update({
   id: '/roles',
   path: '/roles',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedPermissionsRoute = ProtectedPermissionsImport.update({
+  id: '/permissions',
+  path: '/permissions',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -87,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedActivityImport
       parentRoute: typeof ProtectedImport
     }
+    '/_protected/permissions': {
+      id: '/_protected/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof ProtectedPermissionsImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_protected/roles': {
       id: '/_protected/roles'
       path: '/roles'
@@ -108,12 +122,14 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedRouteChildren {
   ProtectedActivityRoute: typeof ProtectedActivityRoute
+  ProtectedPermissionsRoute: typeof ProtectedPermissionsRoute
   ProtectedRolesRoute: typeof ProtectedRolesRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedActivityRoute: ProtectedActivityRoute,
+  ProtectedPermissionsRoute: ProtectedPermissionsRoute,
   ProtectedRolesRoute: ProtectedRolesRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
 }
@@ -127,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/activity': typeof ProtectedActivityRoute
+  '/permissions': typeof ProtectedPermissionsRoute
   '/roles': typeof ProtectedRolesRoute
   '/': typeof ProtectedIndexRoute
 }
@@ -135,6 +152,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/activity': typeof ProtectedActivityRoute
+  '/permissions': typeof ProtectedPermissionsRoute
   '/roles': typeof ProtectedRolesRoute
   '/': typeof ProtectedIndexRoute
 }
@@ -145,21 +163,30 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/_protected/activity': typeof ProtectedActivityRoute
+  '/_protected/permissions': typeof ProtectedPermissionsRoute
   '/_protected/roles': typeof ProtectedRolesRoute
   '/_protected/': typeof ProtectedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/about' | '/login' | '/activity' | '/roles' | '/'
+  fullPaths:
+    | ''
+    | '/about'
+    | '/login'
+    | '/activity'
+    | '/permissions'
+    | '/roles'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/login' | '/activity' | '/roles' | '/'
+  to: '/about' | '/login' | '/activity' | '/permissions' | '/roles' | '/'
   id:
     | '__root__'
     | '/_protected'
     | '/about'
     | '/login'
     | '/_protected/activity'
+    | '/_protected/permissions'
     | '/_protected/roles'
     | '/_protected/'
   fileRoutesById: FileRoutesById
@@ -196,6 +223,7 @@ export const routeTree = rootRoute
       "filePath": "_protected.tsx",
       "children": [
         "/_protected/activity",
+        "/_protected/permissions",
         "/_protected/roles",
         "/_protected/"
       ]
@@ -208,6 +236,10 @@ export const routeTree = rootRoute
     },
     "/_protected/activity": {
       "filePath": "_protected/activity.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/permissions": {
+      "filePath": "_protected/permissions.tsx",
       "parent": "/_protected"
     },
     "/_protected/roles": {

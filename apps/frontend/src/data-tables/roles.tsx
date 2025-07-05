@@ -69,7 +69,11 @@ export const columns = [
     ),
     meta: {
       head: {
-        className: "w-[0.01%] px-6",
+        className: "w-[0.01%] px-6 cursor-pointer",
+        onClick: (e, info) => {
+          e.stopPropagation();
+          info.table.toggleAllRowsSelected();
+        },
       },
       cell: {
         className: "w-[0.01%] px-6",

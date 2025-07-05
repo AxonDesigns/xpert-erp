@@ -1,9 +1,12 @@
+import "zod-openapi/extend";
+import roleTable from "@backend/db/schema/roles";
 import {
   selectRoleSchema,
   insertRoleSchema,
   updateRoleSchema,
 } from "@backend/db/validators/roles";
 import { createRoute, z } from "@hono/zod-openapi";
+import { getTableColumns } from "drizzle-orm";
 import * as HttpStatusCodes from "stoker/http-status-codes";
 import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { jsonContent, jsonContentRequired } from "stoker/openapi/helpers";
@@ -19,6 +22,74 @@ export const list = createRoute({
   path: "/roles",
   method: "get",
   tags,
+  request: {
+    query: z.object({
+      page: z.coerce.number().default(0).openapi({
+        description: "Page number",
+        example: 1,
+      }),
+      limit: z.coerce.number().default(20).openapi({
+        description: "Number of items per page",
+        example: 10,
+      }),
+      sort: z
+        .string()
+        .default("")
+        .transform((value) => {
+          if (!value) return [];
+          const directions = ["asc", "desc"];
+          const tableColumns = Object.values(getTableColumns(roleTable)).map(
+            (col) => col.name,
+          );
+          return value
+            .split(",")
+            .map((pair) => {
+              const [field, direction] = pair.split(":");
+              if (!field || !direction) return null;
+
+              const validDirection = directions.includes(direction);
+              const validField = tableColumns.includes(field);
+              if (!validDirection || !validField) return null;
+
+              return {
+                field,
+                order: direction,
+              };
+            })
+            .filter((pair) => pair !== null);
+        })
+        .openapi({
+          description: "Sorting options",
+          example: "id:asc,name:desc",
+        }),
+      filter: z
+        .string()
+        .default("")
+        .transform((value) => {
+          if (!value) return [];
+
+          return value
+            .split(",")
+            .map((value) => {
+              const [field, filter] = value.split(":");
+              if (!field || !filter) return null;
+              const tableColumns = Object.values(
+                getTableColumns(roleTable),
+              ).map((col) => col.name);
+              if (!tableColumns.includes(field)) return null;
+              return {
+                field,
+                filter,
+              };
+            })
+            .filter((pair) => pair !== null);
+        })
+        .openapi({
+          description: "Filtering options",
+          example: "id:1,name:user",
+        }),
+    }),
+  },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
       z.array(selectRoleSchema),

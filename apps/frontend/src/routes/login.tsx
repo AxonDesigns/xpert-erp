@@ -67,7 +67,7 @@ function RouteComponent() {
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="grid grid-cols-1 gap-2 p-4 bg-surface-1 rounded-2xl w-sm border border-muted"
+        className="grid grid-cols-1 gap-2 p-4 bg-surface-1 not-dark:bg-surface-3 rounded-2xl w-sm border border-muted"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-2">
           <div className="h-px bg-muted" />

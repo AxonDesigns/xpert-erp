@@ -45,7 +45,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
+      <TanStackRouterDevtools position="top-right" />
       <Toaster />
     </QueryClientProvider>
   );
