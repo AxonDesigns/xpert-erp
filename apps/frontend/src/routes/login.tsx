@@ -1,6 +1,6 @@
 import { Button } from "@frontend/components/ui/button";
-import { useAuth } from "@frontend/hooks/useAuth";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { useAuth } from "@frontend/hooks/use-auth";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { loginSchema } from "@repo/backend/validators/login";
 import type { Login } from "@repo/backend/types/login";
@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { LabeledInput } from "@frontend/components/labeled-input";
 import { Lock, Mail } from "lucide-react";
 import { getZodFormFieldErrors } from "@frontend/lib/forms";
-import { useEffect } from "react";
 import type { FileRouteTypes } from "@frontend/routeTree.gen";
 
 interface Search {
@@ -20,26 +19,36 @@ export const Route = createFileRoute("/login")({
   validateSearch: (search): Search => {
     return {
       goto: search.goto as FileRouteTypes["to"],
+    };
+  },
+  beforeLoad: async ({ context, search, location }) => {
+    let shouldRedirect = false;
+    if (context.auth.status === "loading") {
+      try {
+        const user = await context.auth.ensureData();
+        if (user) {
+          shouldRedirect = true;
+        }
+      } catch (_) {
+        shouldRedirect = false;
+      }
     }
-  }
+
+    if (context.auth.status === "authenticated") {
+      shouldRedirect = true;
+    }
+
+    if (shouldRedirect) {
+      throw redirect({
+        to: search.goto || "/",
+        from: location.pathname as FileRouteTypes["to"],
+      });
+    }
+  },
 });
 
 function RouteComponent() {
-  const { user, login } = useAuth();
-  const { goto } = Route.useSearch();
-  const router = useRouter();
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (user) {
-      navigate({
-        to: (goto ?? "/") as FileRouteTypes["to"],
-        replace: true,
-        from: "/login"
-      });
-    }
-  }, [user, goto, navigate]);
-
+  const { login } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -49,12 +58,10 @@ function RouteComponent() {
     validators: {
       onChange: loginSchema,
     },
-    onSubmit: async ({ value: { email, password } }) => {
-      const error = await login(email, password);
-      if (error) {
-        toast.error(error);
-      } else {
-        router.invalidate();
+    onSubmit: async ({ value }) => {
+      const result = await login(value);
+      if (result.status === "error") {
+        toast.error(result.message);
       }
     },
   });

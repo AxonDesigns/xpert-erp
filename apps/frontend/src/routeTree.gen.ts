@@ -8,117 +8,151 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
+import { Route as ProtectedRolesRouteImport } from './routes/_protected/roles'
+import { Route as ProtectedPermissionsRouteImport } from './routes/_protected/permissions'
+import { Route as ProtectedActivityRouteImport } from './routes/_protected/activity'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
-import { Route as AboutImport } from './routes/about'
-import { Route as ProtectedImport } from './routes/_protected'
-import { Route as ProtectedIndexImport } from './routes/_protected/index'
-import { Route as ProtectedRolesImport } from './routes/_protected/roles'
-import { Route as ProtectedPermissionsImport } from './routes/_protected/permissions'
-import { Route as ProtectedActivityImport } from './routes/_protected/activity'
-
-// Create/Update Routes
-
-const LoginRoute = LoginImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ProtectedRoute = ProtectedImport.update({
+const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ProtectedIndexRoute = ProtectedIndexImport.update({
+const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => ProtectedRoute,
 } as any)
-
-const ProtectedRolesRoute = ProtectedRolesImport.update({
+const ProtectedRolesRoute = ProtectedRolesRouteImport.update({
   id: '/roles',
   path: '/roles',
   getParentRoute: () => ProtectedRoute,
 } as any)
-
-const ProtectedPermissionsRoute = ProtectedPermissionsImport.update({
+const ProtectedPermissionsRoute = ProtectedPermissionsRouteImport.update({
   id: '/permissions',
   path: '/permissions',
   getParentRoute: () => ProtectedRoute,
 } as any)
-
-const ProtectedActivityRoute = ProtectedActivityImport.update({
+const ProtectedActivityRoute = ProtectedActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/activity': typeof ProtectedActivityRoute
+  '/permissions': typeof ProtectedPermissionsRoute
+  '/roles': typeof ProtectedRolesRoute
+  '/': typeof ProtectedIndexRoute
+}
+export interface FileRoutesByTo {
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/activity': typeof ProtectedActivityRoute
+  '/permissions': typeof ProtectedPermissionsRoute
+  '/roles': typeof ProtectedRolesRoute
+  '/': typeof ProtectedIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/_protected/activity': typeof ProtectedActivityRoute
+  '/_protected/permissions': typeof ProtectedPermissionsRoute
+  '/_protected/roles': typeof ProtectedRolesRoute
+  '/_protected/': typeof ProtectedIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/about' | '/login' | '/activity' | '/permissions' | '/roles' | '/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/about' | '/login' | '/activity' | '/permissions' | '/roles' | '/'
+  id:
+    | '__root__'
+    | '/_protected'
+    | '/about'
+    | '/login'
+    | '/_protected/activity'
+    | '/_protected/permissions'
+    | '/_protected/roles'
+    | '/_protected/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  ProtectedRoute: typeof ProtectedRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_protected': {
-      id: '/_protected'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof ProtectedImport
-      parentRoute: typeof rootRoute
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/_protected/activity': {
-      id: '/_protected/activity'
-      path: '/activity'
-      fullPath: '/activity'
-      preLoaderRoute: typeof ProtectedActivityImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/permissions': {
-      id: '/_protected/permissions'
-      path: '/permissions'
-      fullPath: '/permissions'
-      preLoaderRoute: typeof ProtectedPermissionsImport
-      parentRoute: typeof ProtectedImport
-    }
-    '/_protected/roles': {
-      id: '/_protected/roles'
-      path: '/roles'
-      fullPath: '/roles'
-      preLoaderRoute: typeof ProtectedRolesImport
-      parentRoute: typeof ProtectedImport
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_protected/': {
       id: '/_protected/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedIndexImport
-      parentRoute: typeof ProtectedImport
+      preLoaderRoute: typeof ProtectedIndexRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/roles': {
+      id: '/_protected/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof ProtectedRolesRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/permissions': {
+      id: '/_protected/permissions'
+      path: '/permissions'
+      fullPath: '/permissions'
+      preLoaderRoute: typeof ProtectedPermissionsRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/activity': {
+      id: '/_protected/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ProtectedActivityRouteImport
+      parentRoute: typeof ProtectedRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface ProtectedRouteChildren {
   ProtectedActivityRoute: typeof ProtectedActivityRoute
@@ -138,118 +172,11 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
   ProtectedRouteChildren,
 )
 
-export interface FileRoutesByFullPath {
-  '': typeof ProtectedRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/activity': typeof ProtectedActivityRoute
-  '/permissions': typeof ProtectedPermissionsRoute
-  '/roles': typeof ProtectedRolesRoute
-  '/': typeof ProtectedIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/activity': typeof ProtectedActivityRoute
-  '/permissions': typeof ProtectedPermissionsRoute
-  '/roles': typeof ProtectedRolesRoute
-  '/': typeof ProtectedIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/_protected': typeof ProtectedRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/_protected/activity': typeof ProtectedActivityRoute
-  '/_protected/permissions': typeof ProtectedPermissionsRoute
-  '/_protected/roles': typeof ProtectedRolesRoute
-  '/_protected/': typeof ProtectedIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | ''
-    | '/about'
-    | '/login'
-    | '/activity'
-    | '/permissions'
-    | '/roles'
-    | '/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/login' | '/activity' | '/permissions' | '/roles' | '/'
-  id:
-    | '__root__'
-    | '/_protected'
-    | '/about'
-    | '/login'
-    | '/_protected/activity'
-    | '/_protected/permissions'
-    | '/_protected/roles'
-    | '/_protected/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  ProtectedRoute: typeof ProtectedRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  LoginRoute: typeof LoginRoute
-}
-
 const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/_protected",
-        "/about",
-        "/login"
-      ]
-    },
-    "/_protected": {
-      "filePath": "_protected.tsx",
-      "children": [
-        "/_protected/activity",
-        "/_protected/permissions",
-        "/_protected/roles",
-        "/_protected/"
-      ]
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/_protected/activity": {
-      "filePath": "_protected/activity.tsx",
-      "parent": "/_protected"
-    },
-    "/_protected/permissions": {
-      "filePath": "_protected/permissions.tsx",
-      "parent": "/_protected"
-    },
-    "/_protected/roles": {
-      "filePath": "_protected/roles.tsx",
-      "parent": "/_protected"
-    },
-    "/_protected/": {
-      "filePath": "_protected/index.tsx",
-      "parent": "/_protected"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

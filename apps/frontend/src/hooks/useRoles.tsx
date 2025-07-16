@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export const useRoles = ({
+  filterColumn,
   filter,
   page,
   limit,
 }: {
+  filterColumn?: string;
   filter?: string;
   page?: number;
   limit?: number;
@@ -21,11 +23,11 @@ export const useRoles = ({
     return () => clearTimeout(timer);
   }, [filter]);
 
-  const { data: roles } = useQuery({
-    queryKey: ["roles", { filter: delayedFilter, page, limit }] as const,
-    queryFn: async ({ queryKey: [, { filter, page, limit }] }) => {
+  const { data: roles, status } = useQuery({
+    queryKey: ["roles", { filter: delayedFilter, filterColumn, page, limit }] as const,
+    queryFn: async ({ queryKey: [, { filter, filterColumn, page, limit }] }) => {
       const reponse = await getRoles({
-        page, limit, filter: `name:${filter},description:${filter}`, sort: "updatedAt:desc,createdAt:desc",
+        page, limit, filter: `${filterColumn}:${filter}`, sort: "updatedAt:desc,createdAt:desc",
       });
 
       if (reponse.status === "success") {
@@ -36,5 +38,8 @@ export const useRoles = ({
     }
   });
 
-  return roles || [];
+  return {
+    roles: roles || [],
+    status
+  };
 };

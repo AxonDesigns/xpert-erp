@@ -1,32 +1,26 @@
-import { RouterProvider, createRouter } from '@tanstack/react-router'
-
-import { routeTree } from './routeTree.gen'
-import { useAuth } from '@frontend/hooks/useAuth'
+import { RouterProvider } from '@tanstack/react-router'
+import { useAuth } from '@frontend/hooks/use-auth'
 import { Toaster } from './components/ui/sonner'
-import { QueryClient } from '@tanstack/react-query'
-
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-const router = createRouter({ routeTree, context: { auth: undefined!, queryClient: undefined! } })
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
-}
-
-const queryClient = new QueryClient();
+import router from '@frontend/lib/router';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from './lib/query-client';
 
 const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProviderWithContext />
+      <Toaster />
+    </QueryClientProvider>
+  )
+}
+
+function RouterProviderWithContext() {
   const auth = useAuth();
 
   return (
-    <>
-      <RouterProvider router={router} context={{
-        auth,
-        queryClient
-      }} />
-      <Toaster />
-    </>
+    <RouterProvider router={router} context={{
+      auth,
+    }} />
   )
 }
 

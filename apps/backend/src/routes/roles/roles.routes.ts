@@ -15,6 +15,8 @@ import {
   createMessageObjectSchema,
   IdParamsSchema,
 } from "stoker/openapi/schemas";
+import { transformSortering } from "@backend/lib/transform-sortering";
+import { transformFiltering } from "@backend/lib/transform-filters";
 
 const tags = ["roles"];
 
@@ -35,29 +37,7 @@ export const list = createRoute({
       sort: z
         .string()
         .default("")
-        .transform((value) => {
-          if (!value) return [];
-          const directions = ["asc", "desc"];
-          const tableColumns = Object.values(getTableColumns(roleTable)).map(
-            (col) => col.name,
-          );
-          return value
-            .split(",")
-            .map((pair) => {
-              const [field, direction] = pair.split(":");
-              if (!field || !direction) return null;
-
-              const validDirection = directions.includes(direction);
-              const validField = tableColumns.includes(field);
-              if (!validDirection || !validField) return null;
-
-              return {
-                field,
-                order: direction,
-              };
-            })
-            .filter((pair) => pair !== null);
-        })
+        .transform((value) => transformSortering(value, roleTable))
         .openapi({
           description: "Sorting options",
           example: "id:asc,name:desc",
@@ -65,25 +45,7 @@ export const list = createRoute({
       filter: z
         .string()
         .default("")
-        .transform((value) => {
-          if (!value) return [];
-
-          return value
-            .split(",")
-            .map((value) => {
-              const [field, filter] = value.split(":");
-              if (!field || !filter) return null;
-              const tableColumns = Object.values(
-                getTableColumns(roleTable),
-              ).map((col) => col.name);
-              if (!tableColumns.includes(field)) return null;
-              return {
-                field,
-                filter,
-              };
-            })
-            .filter((pair) => pair !== null);
-        })
+        .transform((value) => transformFiltering(value, roleTable))
         .openapi({
           description: "Filtering options",
           example: "id:1,name:user",

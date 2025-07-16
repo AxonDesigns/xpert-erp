@@ -11,6 +11,8 @@ import { useRoles } from "@frontend/hooks/useRoles";
 import { Input } from "@frontend/components/ui/input";
 import { Button } from "@frontend/components/ui/button";
 import { motion } from "motion/react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@frontend/components/ui/select";
+import { columns as roleColumns } from "@repo/backend/types/roles"
 
 export const Route = createFileRoute("/_protected/roles")({
   component: RouteComponent,
@@ -25,8 +27,10 @@ function RouteComponent() {
   });
 
   const [filter, setFilter] = useState<string>("");
+  const [filterColumn, setFilterColumn] = useState<string>(roleColumns.find((column) => column.default)?.id || "");
 
-  const roles = useRoles({
+  const { roles, status } = useRoles({
+    filterColumn,
     filter,
     page: pagination.pageIndex,
     limit: pagination.pageSize,
@@ -56,7 +60,24 @@ function RouteComponent() {
       <h1 className="text-4xl font-bold ml-4">Roles</h1>
       <h2 className="ml-4">Manage your roles</h2>
       <div className="flex items-center">
-        <Input value={filter} onChange={(e) => setFilter(e.target.value)} />
+        <Input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter..." />
+        <Select
+          value={filterColumn}
+          onValueChange={(value) => setFilterColumn(value)}
+        >
+          <SelectTrigger className="ml-2 w-60 ">
+            <SelectValue placeholder="Select an action" />
+          </SelectTrigger>
+          <SelectContent>
+            {roleColumns.map((column) => {
+              return (
+                <SelectItem key={column.id} value={column.id}>
+                  {column.label}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
         <motion.div
           initial={{
             opacity: 0,
@@ -81,7 +102,7 @@ function RouteComponent() {
           >Actions</Button>
         </motion.div>
       </div>
-      <DataTable table={table} />
+      <DataTable table={table} isLoading={status === "pending"} isEmpty={roles.length === 0} />
     </main >
   );
 }

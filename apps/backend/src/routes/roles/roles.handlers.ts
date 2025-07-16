@@ -49,6 +49,12 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
       const column = columns.find((col) => col.name === field);
       if (!column) return null;
 
+      if (field === "id") {
+        const id = Number.parseInt(filter);
+        if (Number.isNaN(id)) return null;
+        return eq(column, id);
+      }
+
       return ilike(column, `%${filter}%`);
     })
     .filter((filter) => filter !== null);
@@ -60,6 +66,7 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
     .offset(page * limit)
     .orderBy(...order)
     .where(or(...filterConditions));
+
   return c.json(userList, HttpStatusCodes.OK);
 };
 
