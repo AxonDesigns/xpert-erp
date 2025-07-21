@@ -115,7 +115,7 @@ type AuthState = ToDiscriminatedUnion<
     unauthenticated: {
       user: null;
     };
-    loading: {
+    pending: {
       user: null;
     };
   },
@@ -127,6 +127,8 @@ type AuthUtils = {
     email,
     password,
   }: { email: string; password: string }) => Promise<LoginResult>;
+  loginState: "success" | "error" | "pending" | "idle";
+  logoutState: "success" | "error" | "pending" | "idle";
   logout: () => void;
   ensureData: () => Promise<PublicUser | null>;
 };
@@ -164,12 +166,14 @@ export function useAuth(): AuthData {
     ensureData: () => {
       return queryClient.ensureQueryData(useAuthQueryOptions());
     },
+    loginState: loginMutation.status,
+    logoutState: logoutMutation.status,
   };
 
   if (authQuery.status === "pending") {
     return {
       ...utils,
-      status: "loading",
+      status: "pending",
       user: null,
     };
   }

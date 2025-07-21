@@ -53,19 +53,14 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
     "HS256",
   );
 
-  setCookie(
-    c,
-    "access_token",
-    token,
-    {
-      path: "/",
-      httpOnly: true,
-      maxAge: env.ACCESS_TOKEN_EXPIRES_IN * 1000, // milliseconds
-      expires: new Date(Date.now() + env.ACCESS_TOKEN_EXPIRES_IN * 1000), // milliseconds
-      sameSite: "none",
-      secure: true,
-    },
-  );
+  setCookie(c, "access_token", token, {
+    path: "/",
+    httpOnly: true,
+    maxAge: env.ACCESS_TOKEN_EXPIRES_IN * 1000, // milliseconds
+    expires: new Date(Date.now() + env.ACCESS_TOKEN_EXPIRES_IN * 1000), // milliseconds
+    sameSite: "lax",
+    secure: env.NODE_ENV === "production",
+  });
 
   return c.json(publicUser, HttpStatusCodes.OK);
 };

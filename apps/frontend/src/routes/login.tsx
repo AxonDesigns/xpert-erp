@@ -23,7 +23,7 @@ export const Route = createFileRoute("/login")({
   },
   beforeLoad: async ({ context, search, location }) => {
     let shouldRedirect = false;
-    if (context.auth.status === "loading") {
+    if (context.auth.status === "pending") {
       try {
         const user = await context.auth.ensureData();
         if (user) {
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function RouteComponent() {
-  const { login } = useAuth();
+  const { login, loginState } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -56,12 +56,15 @@ function RouteComponent() {
       password: "",
     } satisfies Login,
     validators: {
-      onChange: loginSchema,
+      onSubmit: loginSchema,
     },
     onSubmit: async ({ value }) => {
+      if (loginState === "pending") return;
+
       const result = await login(value);
       if (result.status === "error") {
         toast.error(result.message);
+        form.reset();
       }
     },
   });
@@ -99,6 +102,7 @@ function RouteComponent() {
               placeholder="Email"
               aria-errormessage={getZodFormFieldErrors(field)}
               icon={Mail}
+              autoFocus
             />
           )}
         />
@@ -120,7 +124,9 @@ function RouteComponent() {
             />
           )}
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit" disabled={loginState === "pending"}>
+          Login
+        </Button>
       </form>
     </div>
   );

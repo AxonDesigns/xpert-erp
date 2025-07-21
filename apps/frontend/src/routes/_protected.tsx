@@ -1,32 +1,36 @@
 import ErrorBoundary from "@frontend/components/error-boundary";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@frontend/components/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "@frontend/components/sidebar";
 import { Button } from "@frontend/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@frontend/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@frontend/components/ui/popover";
 import { Separator } from "@frontend/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@frontend/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@frontend/components/ui/tooltip";
 import { useTheme } from "@frontend/hooks/theme";
 import { useAuth } from "@frontend/hooks/use-auth";
 import { useSidebar } from "@frontend/hooks/useSidebar";
 import { cn } from "@frontend/lib/utils";
 import type { FileRouteTypes } from "@frontend/routeTree.gen";
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
-import {
-  LogOut,
-  Moon,
-  SidebarIcon,
-  Sun,
-  SunMoon,
-} from "lucide-react";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { LogOut, Moon, SidebarIcon, Sun, SunMoon } from "lucide-react";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ context, location }) => {
     let shouldRedirect = false;
 
-    if (context.auth.status === "loading") {
+    if (context.auth.status === "pending") {
       try {
         await context.auth.ensureData();
       } catch (error) {
@@ -44,7 +48,7 @@ export const Route = createFileRoute("/_protected")({
         from: location.pathname as FileRouteTypes["to"],
         search: {
           goto: location.pathname as FileRouteTypes["to"],
-        }
+        },
       });
     }
   },
@@ -122,7 +126,7 @@ function RouteComponent() {
               <Separator orientation="horizontal" />
               <TooltipProvider>
                 <div className="flex rounded-md">
-                  <Tooltip>
+                  <Tooltip defaultOpen={false}>
                     <TooltipTrigger asChild>
                       <Button
                         className={cn(
@@ -142,7 +146,7 @@ function RouteComponent() {
                     </TooltipContent>
                   </Tooltip>
                   <Separator orientation="vertical" />
-                  <Tooltip>
+                  <Tooltip defaultOpen={false}>
                     <TooltipTrigger asChild>
                       <Button
                         className={cn(
@@ -162,7 +166,7 @@ function RouteComponent() {
                     </TooltipContent>
                   </Tooltip>
                   <Separator orientation="vertical" />
-                  <Tooltip>
+                  <Tooltip defaultOpen={false}>
                     <TooltipTrigger asChild>
                       <Button
                         className={cn(
@@ -187,7 +191,7 @@ function RouteComponent() {
               <span className="text-xs m-2 text-muted-foreground">Account</span>
               <Separator orientation="horizontal" />
               <Button
-                variant="ghost"
+                variant="destructiveLow"
                 className="rounded-none justify-start"
                 onClick={() => {
                   logout();
@@ -200,9 +204,7 @@ function RouteComponent() {
           </Popover>
         </SidebarFooter>
       </Sidebar>
-      <div
-        className="relative grid grid-cols-1 flex-1 transition-all duration-300"
-      >
+      <div className="relative grid grid-cols-1 flex-1 transition-all duration-300">
         <Button
           size="icon"
           variant="ghost"

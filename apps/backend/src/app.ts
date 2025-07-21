@@ -5,7 +5,7 @@ import users from "@backend/routes/users/users.index";
 import roles from "@backend/routes/roles/roles.index";
 import authRoute from "@backend/routes/auth/auth.index";
 import auth from "@backend/middlewares/auth";
-import { getConnInfo } from "hono/bun";
+import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { env } from "@env/backend";
 import db from "./db";
@@ -36,6 +36,27 @@ app.post("/test", async (c) => {
 for (const route of routes) {
   app.route("/api", route);
 }
+
+app.use(
+  "*",
+  serveStatic({
+    root: "./dist",
+    onNotFound: (path, c) => {
+      console.log(path);
+    },
+  }),
+);
+
+app.use(
+  "/*",
+  serveStatic({
+    root: "./dist",
+    path: "index.html",
+    onNotFound: (path, c) => {
+      console.log(path);
+    },
+  }),
+);
 
 export type AppType = (typeof routes)[number];
 

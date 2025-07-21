@@ -4,7 +4,6 @@ import "./index.css";
 import "@frontend/fonts/Supreme/css/supreme.css";
 import { ThemeProvider } from "@frontend/hooks/theme";
 import App from "@frontend/app";
-import { AuthProvider } from "@frontend/hooks/use-auth";
 import gsap from "gsap";
 import Flip from "gsap/Flip";
 
