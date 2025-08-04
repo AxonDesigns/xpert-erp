@@ -1,39 +1,33 @@
 import type { SelectRole } from "@backend/db/types/roles";
 import { format } from "@formkit/tempo";
-import { Button, type buttonVariants } from "@frontend/components/ui/button";
 import { Checkbox } from "@frontend/components/ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@frontend/components/ui/popover";
-import { Separator } from "@frontend/components/ui/separator";
-import { PopoverClose } from "@radix-ui/react-popover";
 import { createColumnHelper } from "@tanstack/react-table";
-import type { VariantProps } from "class-variance-authority";
-import { type LucideIcon, MoreVertical, Pencil, Trash } from "lucide-react";
 
 const { accessor, display } = createColumnHelper<SelectRole>();
 
-export const options: {
+/*export const options: {
   icon: LucideIcon;
   label: string;
   variant: VariantProps<typeof buttonVariants>["variant"];
   action: (data: SelectRole) => void;
 }[] = [
-    {
-      icon: Pencil,
-      label: "Edit",
-      variant: "ghost",
-      action: (data) => {
-        console.log(data);
-      },
+  {
+    icon: Pencil,
+    label: "Edit",
+    variant: "ghost",
+    action: (data) => {
+      console.log(data);
     },
-    {
-      icon: Trash,
-      label: "Delete",
-      variant: "destructive",
-      action: (data) => {
-        console.log(data);
-      },
+  },
+  {
+    icon: Trash,
+    label: "Delete",
+    variant: "destructive",
+    action: (data) => {
+      console.log(data);
     },
-  ];
+  },
+];*/
 
 export const columns = [
   display({
@@ -41,7 +35,10 @@ export const columns = [
     header: (info) => (
       <div className="h-full w-full grid place-items-center">
         <Checkbox
-          checked={info.table.getIsAllRowsSelected() || (info.table.getIsSomeRowsSelected() ? "indeterminate" : false)}
+          checked={
+            info.table.getIsAllRowsSelected() ||
+            (info.table.getIsSomeRowsSelected() ? "indeterminate" : false)
+          }
           onCheckedChange={() => {
             info.table.toggleAllRowsSelected();
           }}
@@ -52,10 +49,7 @@ export const columns = [
       </div>
     ),
     cell: (info) => (
-      <div
-        className="h-full w-full grid place-items-center"
-        onKeyDown={() => { }}
-      >
+      <div className="h-full w-full grid place-items-center">
         <Checkbox
           checked={info.row.getIsSelected()}
           onCheckedChange={() => {
@@ -77,6 +71,10 @@ export const columns = [
       },
       cell: {
         className: "w-[0.01%] px-6",
+        onClick: (e, info) => {
+          e.stopPropagation();
+          info.row.toggleSelected();
+        },
       },
     },
   }),
@@ -101,8 +99,8 @@ export const columns = [
       },
       cell: {
         className: "w-[0.01%] pr-6",
-      }
-    }
+      },
+    },
   }),
   accessor("description", {
     header: "Description",
@@ -117,8 +115,8 @@ export const columns = [
       },
       cell: {
         className: "w-[0.01%]",
-      }
-    }
+      },
+    },
   }),
   accessor("updatedAt", {
     header: "Updated At",
@@ -129,10 +127,10 @@ export const columns = [
       },
       cell: {
         className: "w-[0.01%]",
-      }
-    }
+      },
+    },
   }),
-  display({
+  /* display({
     id: "actions",
     header: () => <span>Actions</span>,
     cell: (info) => {
@@ -158,29 +156,27 @@ export const columns = [
             <ul>
               <h2 className="py-2 px-4 text-xs">Actions</h2>
               <Separator />
-              {options.map(
-                ({ icon: Icon, label, variant, action }, index) => {
-                  return (
-                    <PopoverClose
-                      // biome-ignore lint/suspicious/noArrayIndexKey:
-                      key={index}
-                      asChild
+              {options.map(({ icon: Icon, label, variant, action }, index) => {
+                return (
+                  <PopoverClose
+                    // biome-ignore lint/suspicious/noArrayIndexKey: lol
+                    key={index}
+                    asChild
+                  >
+                    <Button
+                      variant={variant}
+                      className="rounded-none justify-start"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        action(info.row.original);
+                      }}
                     >
-                      <Button
-                        variant={variant}
-                        className="rounded-none justify-start"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          action(info.row.original);
-                        }}
-                      >
-                        <Icon />
-                        {label}
-                      </Button>
-                    </PopoverClose>
-                  );
-                },
-              )}
+                      <Icon />
+                      {label}
+                    </Button>
+                  </PopoverClose>
+                );
+              })}
             </ul>
           </PopoverContent>
         </Popover>
@@ -193,6 +189,6 @@ export const columns = [
       cell: {
         className: "w-[0.01%] px-6 text-center",
       },
-    }
-  })
+    },
+  }), */
 ];

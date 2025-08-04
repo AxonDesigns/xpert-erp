@@ -98,8 +98,8 @@ export type AuthContext = ReturnType<typeof useAuth>; */
 import type { PublicUser } from "@backend/db/types/users";
 import { useAuthQuery, useAuthQueryOptions } from "@frontend/domain/auth-query";
 import {
-  type LoginResult,
-  useLoginMutation,
+	type LoginResult,
+	useLoginMutation,
 } from "@frontend/domain/login-mutation";
 import { useLogoutMutation } from "@frontend/domain/logout-mutation";
 import router from "@frontend/lib/router";
@@ -108,97 +108,95 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 type AuthState = ToDiscriminatedUnion<
-  {
-    authenticated: {
-      user: PublicUser;
-    };
-    unauthenticated: {
-      user: null;
-    };
-    pending: {
-      user: null;
-    };
-  },
-  "status"
+	{
+		authenticated: {
+			user: PublicUser;
+		};
+		unauthenticated: {
+			user: null;
+		};
+		pending: {
+			user: null;
+		};
+	},
+	"status"
 >;
 
 type AuthUtils = {
-  login: ({
-    email,
-    password,
-  }: { email: string; password: string }) => Promise<LoginResult>;
-  loginState: "success" | "error" | "pending" | "idle";
-  logoutState: "success" | "error" | "pending" | "idle";
-  logout: () => void;
-  ensureData: () => Promise<PublicUser | null>;
+	login: ({
+		email,
+		password,
+	}: {
+		email: string;
+		password: string;
+	}) => Promise<LoginResult>;
+	loginState: "success" | "error" | "pending" | "idle";
+	logoutState: "success" | "error" | "pending" | "idle";
+	logout: () => void;
+	ensureData: () => Promise<PublicUser | null>;
 };
 
 export type AuthData = AuthState & AuthUtils;
 
 export function useAuth(): AuthData {
-  const authQuery = useAuthQuery();
-  const queryClient = useQueryClient();
-  const logoutMutation = useLogoutMutation();
-  const loginMutation = useLoginMutation();
+	const authQuery = useAuthQuery();
+	const queryClient = useQueryClient();
+	const logoutMutation = useLogoutMutation();
+	const loginMutation = useLoginMutation();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    router.invalidate();
-  }, [authQuery.data]);
+	useEffect(() => {
+		router.invalidate();
+	}, [authQuery.data]);
 
-  useEffect(() => {
-    if (authQuery.error === null) return;
-    queryClient.setQueryData(["auth"], null);
-  }, [authQuery.error, queryClient]);
+	useEffect(() => {
+		if (authQuery.error === null) return;
+		queryClient.setQueryData(["auth"], null);
+	}, [authQuery.error, queryClient]);
 
-  const utils: AuthUtils = {
-    login: async ({ email, password }: { email: string; password: string }) => {
-      const result = await loginMutation.mutateAsync({
-        email,
-        password,
-      });
+	const utils: AuthUtils = {
+		login: async ({ email, password }: { email: string; password: string }) => {
+			const result = await loginMutation.mutateAsync({
+				email,
+				password,
+			});
 
-      return result;
-    },
-    logout: () => {
-      logoutMutation.mutate();
-    },
-    ensureData: () => {
-      return queryClient.ensureQueryData(useAuthQueryOptions());
-    },
-    loginState: loginMutation.status,
-    logoutState: logoutMutation.status,
-  };
+			return result;
+		},
+		logout: () => {
+			logoutMutation.mutate();
+		},
+		ensureData: () => {
+			return queryClient.ensureQueryData(useAuthQueryOptions());
+		},
+		loginState: loginMutation.status,
+		logoutState: logoutMutation.status,
+	};
 
-  if (authQuery.status === "pending") {
-    return {
-      ...utils,
-      status: "pending",
-      user: null,
-    };
-  }
+	if (authQuery.status === "pending") {
+		return {
+			...utils,
+			status: "pending",
+			user: null,
+		};
+	} else if (authQuery.status === "success") {
+		if (authQuery.data === null) {
+			return {
+				...utils,
+				status: "unauthenticated",
+				user: null,
+			};
+		} else if (authQuery.data.status === "success") {
+			return {
+				...utils,
+				status: "authenticated",
+				user: authQuery.data.user,
+			};
+		}
+	}
 
-  if (authQuery.status === "success") {
-    if (authQuery.data === null) {
-      return {
-        ...utils,
-        status: "unauthenticated",
-        user: null,
-      };
-    }
-
-    if (authQuery.data.status === "success") {
-      return {
-        ...utils,
-        status: "authenticated",
-        user: authQuery.data.user,
-      };
-    }
-  }
-
-  return {
-    ...utils,
-    status: "unauthenticated",
-    user: null,
-  };
+	return {
+		...utils,
+		status: "unauthenticated",
+		user: null,
+	};
 }

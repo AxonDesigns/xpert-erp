@@ -20,21 +20,21 @@
     "./app": "./src/app.ts"
   },
   "dependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@hono/zod-openapi": "^0.19.5",
+    "@biomejs/biome": "2.1.2",
+    "@hono/zod-openapi": "0.19.5",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@repo/env": "workspace:*",
-    "@scalar/hono-api-reference": "^0.8.2",
+    "@scalar/hono-api-reference": "0.9.12",
     "chalk": "^5.4.1",
-    "drizzle-orm": "^0.42.0",
-    "drizzle-zod": "^0.7.1",
+    "drizzle-orm": "0.44.3",
+    "drizzle-zod": "0.7.1",
     "hono": "^4.7.7",
     "libphonenumber-js": "^1.12.7",
     "pg": "^8.14.1",
     "stoker": "^1.4.2",
-    "zod": "^3.24.3",
-    "zod-openapi": "^4.2.4"
+    "zod": "3.25.76",
+    "zod-openapi": "4.2.4"
   },
   "devDependencies": {
     "@repo/typescript": "workspace:*",

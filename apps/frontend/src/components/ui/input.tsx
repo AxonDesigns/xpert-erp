@@ -1,21 +1,53 @@
-import type * as React from "react"
+import { cn } from "@frontend/lib/utils";
+import { useImperativeHandle, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { CustomWiggle } from "gsap/CustomWiggle";
 
-import { cn } from "@frontend/lib/utils"
+function Input({
+  className,
+  type,
+  ref: forwardedRef,
+  ...props
+}: React.ComponentProps<"input">) {
+  const ref = useRef<HTMLInputElement>(null);
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  useImperativeHandle(forwardedRef, () => ref.current as HTMLInputElement);
+
+  useGSAP(
+    () => {
+      if (!ref.current) return;
+      if (props["aria-errormessage"]) {
+        gsap.to(ref.current, {
+          duration: 0.25,
+          ease: CustomWiggle.create("wiggle", {
+            wiggles: 4,
+            type: "easeOut",
+          }),
+          x: -5,
+        });
+      }
+    },
+    {
+      scope: ref,
+      dependencies: [props["aria-errormessage"]],
+    },
+  );
+
   return (
     <input
       type={type}
+      ref={ref}
       data-slot="input"
       className={cn(
         "bg-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Input }
+export { Input };

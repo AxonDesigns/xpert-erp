@@ -1,7 +1,7 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import type { QueryClient } from "@tanstack/react-query";
 import type { AuthData } from "@frontend/hooks/use-auth";
-import { SidebarProvider } from "@frontend/hooks/useSidebar";
+import { SidebarProvider } from "@frontend/hooks/use-sidebar";
 
 type RouterContext = {
   auth: AuthData;
@@ -13,7 +13,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
-
   return (
     <SidebarProvider>
       <Outlet />

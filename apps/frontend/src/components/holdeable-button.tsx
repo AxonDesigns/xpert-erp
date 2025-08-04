@@ -47,7 +47,7 @@ export function HoldeableButton({
     gsap
       .timeline()
       .fromTo(
-        containerRef.current,
+        ".button-content",
         {
           scale: 1.0,
         },
@@ -57,7 +57,7 @@ export function HoldeableButton({
           ease: "sine.out",
         },
       )
-      .to(containerRef.current, {
+      .to(".button-content", {
         scale: 1.0,
         duration: 1,
         ease: "elastic.out",
@@ -65,13 +65,13 @@ export function HoldeableButton({
   });
 
   const stopHold = contextSafe(() => {
-    gsap.killTweensOf([".bar", containerRef.current]);
+    gsap.killTweensOf([".bar", ".button-content"]);
     gsap.to(".bar", {
       width: "0%",
       duration: 0.15,
       ease: "power1.inOut",
     });
-    gsap.to(containerRef.current, {
+    gsap.to(".button-content", {
       scale: 1.0,
       duration: 0.75,
       ease: "elastic.out",
@@ -79,7 +79,7 @@ export function HoldeableButton({
   });
 
   const startHold = contextSafe(() => {
-    gsap.killTweensOf([".bar", containerRef.current]);
+    gsap.killTweensOf([".bar", ".button-content"]);
     gsap.set(".bar", {
       width: "0%",
       alpha: 1.0,
@@ -95,7 +95,7 @@ export function HoldeableButton({
         onClick?.();
       },
     });
-    gsap.to(containerRef.current, {
+    gsap.to(".button-content", {
       scale: 0.9,
       duration: holdFor,
       ease: "linear",
@@ -140,27 +140,27 @@ export function HoldeableButton({
       variant={variant}
       {...props}
     >
-      <>
-        <div
-          className={cn(
-            "bar absolute inset-0 pointer-events-none select-none",
-            {
-              default: "bg-background/25",
-              destructive: "bg-background/50 dark:bg-destructive/25",
-              destructiveLow: "bg-destructive/20",
-              warning: "bg-yellow-700/25 dark:bg-yellow-500/25",
-              outline: "bg-foreground/25",
-              secondary: "bg-foreground/25",
-              ghost: "bg-foreground/15",
-              link: "bg-foreground/15",
-              text: "bg-foreground/15",
-              none: "",
-            }[variant || "default"],
-          )}
-          style={{ width: 0 }}
-        />
+      <div
+        className={cn(
+          "bar absolute inset-0 pointer-events-none select-none",
+          {
+            default: "bg-background/25",
+            destructive: "bg-background/50 dark:bg-destructive/25",
+            destructiveLow: "bg-destructive/20",
+            warning: "bg-yellow-700/25 dark:bg-yellow-500/25",
+            outline: "bg-foreground/25",
+            secondary: "bg-foreground/25",
+            ghost: "bg-foreground/15",
+            link: "bg-foreground/15",
+            text: "bg-foreground/15",
+            none: "",
+          }[variant || "default"],
+        )}
+        style={{ width: 0 }}
+      />
+      <div className="button-content inline-flex items-center justify-center gap-2 whitespace-nowrap">
         {children}
-      </>
+      </div>
     </Button>
   );
 }

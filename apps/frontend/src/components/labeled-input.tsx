@@ -1,6 +1,9 @@
 import { useImperativeHandle, useRef, type ComponentProps } from "react";
 import { cn } from "@frontend/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { CustomWiggle } from "gsap/CustomWiggle";
 
 interface LabeledInputProps extends ComponentProps<"input"> {
   label: string;
@@ -14,13 +17,35 @@ export function LabeledInput({
   icon,
   ...props
 }: LabeledInputProps) {
+  const container = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLInputElement>(null);
 
   useImperativeHandle(forwardedRef, () => ref.current as HTMLInputElement);
 
   const StartIcon = icon;
 
+  useGSAP(
+    () => {
+      if (!container.current) return;
+      if (props["aria-errormessage"]) {
+        gsap.to(container.current, {
+          duration: 0.25,
+          ease: CustomWiggle.create("wiggle", {
+            wiggles: 4,
+            type: "easeOut",
+          }),
+          x: -50,
+        });
+      }
+    },
+    {
+      scope: container,
+      dependencies: [props["aria-errormessage"]],
+    },
+  );
+
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: false positive
     <div
       className={cn(
         "relative grid col-span-1 bg-foreground/2 cursor-text border border-foreground/25 rounded-md",
@@ -29,6 +54,7 @@ export function LabeledInput({
         "aria-[errormessage]:border-destructive aria-[errormessage]:ring-destructive/25",
         "transition-all",
       )}
+      ref={container}
       aria-invalid={props["aria-invalid"]}
       aria-errormessage={props["aria-errormessage"]}
       onClick={() => {

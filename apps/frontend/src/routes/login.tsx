@@ -25,8 +25,9 @@ export const Route = createFileRoute("/login")({
     let shouldRedirect = false;
     if (context.auth.status === "pending") {
       try {
-        const user = await context.auth.ensureData();
-        if (user) {
+        const response = await context.auth.ensureData();
+        // @ts-ignore
+        if (response.status !== "error") {
           shouldRedirect = true;
         }
       } catch (_) {

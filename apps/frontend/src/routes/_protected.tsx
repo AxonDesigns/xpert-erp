@@ -4,6 +4,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarLayout,
 } from "@frontend/components/sidebar";
 import { Button } from "@frontend/components/ui/button";
 import {
@@ -20,7 +21,7 @@ import {
 } from "@frontend/components/ui/tooltip";
 import { useTheme } from "@frontend/hooks/theme";
 import { useAuth } from "@frontend/hooks/use-auth";
-import { useSidebar } from "@frontend/hooks/useSidebar";
+import { useSidebar } from "@frontend/hooks/use-sidebar";
 import { cn } from "@frontend/lib/utils";
 import type { FileRouteTypes } from "@frontend/routeTree.gen";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
@@ -31,9 +32,9 @@ export const Route = createFileRoute("/_protected")({
     let shouldRedirect = false;
 
     if (context.auth.status === "pending") {
-      try {
-        await context.auth.ensureData();
-      } catch (error) {
+      const response = await context.auth.ensureData();
+      // @ts-ignore
+      if (response.status === "error") {
         shouldRedirect = true;
       }
     }
@@ -61,7 +62,7 @@ function RouteComponent() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="relative flex p-2 pl-0 gap-2 h-dvh overflow-hidden">
+    <SidebarLayout>
       <Sidebar>
         <SidebarHeader className="grid grid-cols-1">
           <Popover>
@@ -217,6 +218,6 @@ function RouteComponent() {
           <Outlet />
         </ErrorBoundary>
       </div>
-    </div>
+    </SidebarLayout>
   );
 }
