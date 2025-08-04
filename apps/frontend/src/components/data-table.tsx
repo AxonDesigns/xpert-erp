@@ -42,122 +42,109 @@ export function DataTable<TData>({
   ...props
 }: DataTableProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
-  const pageSize = table.getState().pagination.pageSize;
+  //const pageSize = table.getState().pagination.pageSize;
   const totalPages = table.getPageCount();
   const totalEntries = table.getRowModel().rows.length;
 
   return (
     <div
       className={cn(
-        "flex flex-col flex-1 justify-between overflow-hidden border border-input rounded-xl rounded-b-md not-dark:bg-surface-3",
+        "flex flex-col flex-1 justify-between border border-input rounded-xl rounded-b-md not-dark:bg-surface-3 overflow-hidden",
         className,
       )}
       {...props}
     >
-      <div className="flex-1 overflow-auto">
-        <Table className="flex-1 border-b border-input">
-          <TableHeader className="bg-foreground/5">
-            {table.getHeaderGroups().map((group) => (
-              <TableRow key={group.id}>
-                {group.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={cn(
-                      "",
-                      header.column.columnDef.meta?.head?.className,
-                    )}
-                    onClick={(e) => {
-                      header.column.columnDef.meta?.head?.onClick?.(
-                        e,
+      <Table className="flex-1 border-b border-input">
+        <TableHeader className="bg-foreground/5">
+          {table.getHeaderGroups().map((group) => (
+            <TableRow key={group.id}>
+              {group.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "",
+                    header.column.columnDef.meta?.head?.className,
+                  )}
+                  onClick={(e) => {
+                    header.column.columnDef.meta?.head?.onClick?.(
+                      e,
+                      header.getContext(),
+                    );
+                  }}
+                  style={{
+                    minWidth: header.column.columnDef.minSize,
+                    width: header.column.columnDef.size,
+                    maxWidth: header.column.columnDef.maxSize,
+                  }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
                         header.getContext(),
-                      );
-                    }}
-                    style={{
-                      minWidth: header.column.columnDef.minSize,
-                      width: header.column.columnDef.size,
-                      maxWidth: header.column.columnDef.maxSize,
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {!isLoading &&
-              !isEmpty &&
-              table.getRowModel().rows.map((row) => (
-                <Fragment key={row.id}>
-                  <TableRow
-                    onClick={() => {
-                      onRowClick?.(row);
-                    }}
-                    data-selected={row.getIsSelected()}
-                    className={cn(
-                      "cursor-pointer hover:duration-0",
-                      "data-[selected=true]:bg-foreground/5",
-                      "data-[selected=true]:dark:bg-foreground/10",
-                    )}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          "",
-                          cell.column.columnDef.meta?.cell?.className,
-                        )}
-                        onClick={(e) => {
-                          cell.column.columnDef.meta?.cell?.onClick?.(
-                            e,
-                            cell.getContext(),
-                          );
-                        }}
-                        style={{
-                          minWidth: cell.column.columnDef.minSize || undefined,
-                          width: cell.column.columnDef.size || undefined,
-                          maxWidth: cell.column.columnDef.maxSize || undefined,
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {
-                    <ExpandableRow
-                      colSpan={table.getAllColumns().length}
-                      expanded={row.getIsExpanded()}
-                    >
-                      {expandedContent?.(row)}
-                    </ExpandableRow>
-                  }
-                </Fragment>
+                      )}
+                </TableHead>
               ))}
-          </TableBody>
-        </Table>
-        {isLoading && (
-          <div className="flex items-center justify-center p-2 text-sm">
-            <span className="ml-2">Loading...</span>
-          </div>
-        )}
-        {isEmpty && !isLoading && (
-          <div className="flex items-center justify-center p-2 text-sm">
-            <span className="ml-2">No entries found</span>
-          </div>
-        )}
-      </div>
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {!isLoading &&
+            !isEmpty &&
+            table.getRowModel().rows.map((row) => (
+              <Fragment key={row.id}>
+                <TableRow
+                  onClick={() => {
+                    onRowClick?.(row);
+                  }}
+                  data-selected={row.getIsSelected()}
+                  className={cn(
+                    "cursor-pointer hover:duration-0",
+                    "data-[selected=true]:bg-foreground/5",
+                    "data-[selected=true]:dark:bg-foreground/10",
+                  )}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "",
+                        cell.column.columnDef.meta?.cell?.className,
+                      )}
+                      onClick={(e) => {
+                        cell.column.columnDef.meta?.cell?.onClick?.(
+                          e,
+                          cell.getContext(),
+                        );
+                      }}
+                      style={{
+                        minWidth: cell.column.columnDef.minSize || undefined,
+                        width: cell.column.columnDef.size || undefined,
+                        maxWidth: cell.column.columnDef.maxSize || undefined,
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {
+                  <ExpandableRow
+                    colSpan={table.getAllColumns().length}
+                    expanded={row.getIsExpanded()}
+                  >
+                    {expandedContent?.(row)}
+                  </ExpandableRow>
+                }
+              </Fragment>
+            ))}
+        </TableBody>
+      </Table>
       <div className="flex items-center p-2 border-t border-input text-sm">
         <span className="ml-2">
-          Showing <b>{totalEntries}</b> of{" "}
-          <b>{pageSize * pageIndex + totalEntries}</b> out of{" "}
+          Showing <b>{pageIndex + 1}</b> of <b>{totalPages}</b> pages with{" "}
           <b>{totalEntries}</b> entries
         </span>
         <div className="flex-1" />

@@ -1,5 +1,11 @@
 import ErrorBoundary from "@frontend/components/error-boundary";
 import {
+  Foldout,
+  FoldoutContent,
+  FoldoutGroup,
+  FoldoutTrigger,
+} from "@frontend/components/foldout";
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -24,7 +30,12 @@ import { useAuth } from "@frontend/hooks/use-auth";
 import { useSidebar } from "@frontend/hooks/use-sidebar";
 import { cn } from "@frontend/lib/utils";
 import type { FileRouteTypes } from "@frontend/routeTree.gen";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
 import { LogOut, Moon, SidebarIcon, Sun, SunMoon } from "lucide-react";
 
 export const Route = createFileRoute("/_protected")({
@@ -95,7 +106,45 @@ function RouteComponent() {
           </Popover>
         </SidebarHeader>
         <SidebarContent>
-          <span>Content</span>
+          <FoldoutGroup multiple>
+            <Foldout value="general" startOpen>
+              <FoldoutTrigger>General</FoldoutTrigger>
+              <FoldoutContent>
+                <Button variant="none" className="justify-start" asChild>
+                  <Link
+                    to="/"
+                    className="text-foreground/50 hover:bg-foreground/5 data-[status=active]:text-foreground data-[status=active]:bg-foreground/10 hover:data-[status=active]:bg-foreground/20"
+                  >
+                    Home
+                  </Link>
+                </Button>
+                <Button variant="none" className="justify-start" asChild>
+                  <Link
+                    to="/activity"
+                    className="text-foreground/50 hover:bg-foreground/5 data-[status=active]:text-foreground data-[status=active]:bg-foreground/10 hover:data-[status=active]:bg-foreground/20"
+                  >
+                    Activity
+                  </Link>
+                </Button>
+                <Button variant="none" className="justify-start" asChild>
+                  <Link
+                    to="/roles"
+                    className="text-foreground/50 hover:bg-foreground/5 data-[status=active]:text-foreground data-[status=active]:bg-foreground/10 hover:data-[status=active]:bg-foreground/20"
+                  >
+                    Roles
+                  </Link>
+                </Button>
+                <Button variant="none" className="justify-start" asChild>
+                  <Link
+                    to="/permissions"
+                    className="text-foreground/50 hover:bg-foreground/5 data-[status=active]:text-foreground data-[status=active]:bg-foreground/10 hover:data-[status=active]:bg-foreground/20"
+                  >
+                    Permissions
+                  </Link>
+                </Button>
+              </FoldoutContent>
+            </Foldout>
+          </FoldoutGroup>
         </SidebarContent>
         <SidebarFooter className="grid grid-cols-1">
           <Popover>
